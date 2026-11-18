@@ -12,6 +12,14 @@ measurements100M.txt
 measurements.txt
 data/measurements.txt
 data/.measurements_expiry
+legacy/data/measurements.txt
+legacy/data/.measurements_expiry
+
+# Dados gerados pelo Isoterma (Parquet e afins nunca vão para o git)
+/data/
+*.parquet
+*.duckdb
+*.duckdb.wal
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
