@@ -1,19 +1,83 @@
-[tool.poetry]
-name = "one-billion-row-challenge-python"
-version = "0.1.0"
-description = ""
-authors = ["Luciano Filho <lvgalvaofilho@gmail.com>"]
+[project]
+name = "isoterma"
+dynamic = ["version"]
+description = "Inteligência térmica para data centers: veja, entenda e pergunte."
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Vinicios Pires" }]
+requires-python = ">=3.14"
+keywords = ["data center", "duckdb", "telemetria", "anomalias", "llm", "text-to-sql"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+dependencies = [
+    "duckdb>=2.0",
+    "pandas>=3.1",
+    "polars>=2.1",
+    "typer>=0.29",
+]
 
-[tool.poetry.dependencies]
-python = "3.12.1"
-polars = "0.20.3"
-duckdb = "0.10.0"
-modin = {extras = ["dask"], version = "^0.27.0"}
-dask = {extras = ["complete"], version = "^2024.2.0"}
-dask-expr = "^0.4.2"
-tqdm = "^4.66.2"
+[project.scripts]
+isoterma = "isoterma.cli:app"
+
+[project.urls]
+Repository = "https://github.com/Vinicios-Pires/isoterma-project"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.7",
+    "pyright>=1.1.414",
+    "pytest>=9.2",
+    "pytest-cov>=7.1",
+    "ruff>=0.17",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/isoterma/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/isoterma"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+extend-exclude = ["legacy"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle
+    "W",   # pycodestyle (avisos)
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # bugbear
+    "SIM", # simplificações
+    "RUF", # regras do próprio ruff
+]
+
+[tool.pyright]
+include = ["src", "tests"]
+pythonVersion = "3.14"
+typeCheckingMode = "standard"
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+
+[tool.coverage.run]
+source = ["isoterma"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true

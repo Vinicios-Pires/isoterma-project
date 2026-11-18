@@ -28,4 +28,4 @@ Sem boas práticas de limpeza, cada execução acumula espaço desnecessário.
 - Aviso exibido com data e hora de expiração
 - Após 24h, arquivo deletado automaticamente na próxima execução
 
-![Melhoria implementada](melhoria_temp implementada.png)
+![Melhoria implementada](img-melhoria-temp.png)
