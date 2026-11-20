@@ -66,7 +66,7 @@ select = [
     "RUF", # regras do próprio ruff
 ]
 # Símbolos usados de propósito em textos em português (5 × 3, ΔT = saída − entrada).
-allowed-confusables = ["×", "−"]
+allowed-confusables = ["×", "−", "–"]
 
 [tool.pyright]
 include = ["src", "tests"]
