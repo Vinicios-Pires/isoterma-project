@@ -97,10 +97,18 @@ hora calculada a partir dos minutos), consultas de domínio com escolha automát
 simulação e limites de linhas e de tempo. Sobre 1 bilhão de leituras, as consultas de domínio
 respondem em menos de 1 s. Detalhes em [MOTOR.md](MOTOR.md).
 
+**Benchmark (20/11/2026):** Python puro (mmap + multiprocessing), pandas 3, Polars 2 e DuckDB 2
+em duas tarefas: o 1BRC clássico e uma tarefa realista (junção, janela de uma hora e faixa
+ASHRAE), sobre `.txt` e Parquet. Cada medição roda num processo isolado, com tempo e pico de
+memória, e todo resultado é conferido contra a referência. O relatório
+[BENCHMARK.md](BENCHMARK.md) é gerado a partir dos JSONs em `docs/benchmark/`. É a resposta ao
+ponto mais fraco do projeto original: tempos sem validação e engines que imprimiam resultados
+em formatos diferentes.
+
 ### Decisões em aberto
 
-- Desenho do benchmark entre engines (Python, pandas, Polars e DuckDB, com o 1BRC clássico e uma
-  tarefa realista)
+- Fase 2: desenho da camada de IA (provedores, prompt com o dicionário de dados, laço de correção
+  do SQL e benchmark de LLMs)
 
 O projeto original da aula está preservado em [`legacy/`](../legacy/) como referência do
 ponto de partida.

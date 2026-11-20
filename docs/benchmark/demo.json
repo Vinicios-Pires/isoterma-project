@@ -1,0 +1,175 @@
+{
+  "simulacao": {
+    "nome": "demo",
+    "leituras": 43718400,
+    "sensores": 1012,
+    "racks": 200,
+    "linhas_txt": 35078160,
+    "bytes_parquet": 56204353,
+    "bytes_txt": 746576874
+  },
+  "maquina": {
+    "cpu": "AMD Ryzen 5 5600 6-Core Processor",
+    "nucleos": 6,
+    "threads": 12,
+    "memoria_gb": 16,
+    "sistema": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.10"
+  },
+  "versoes": {
+    "isoterma": "0.1.0",
+    "duckdb": "2.0.0",
+    "polars": "2.1.0",
+    "pandas": "3.1.1",
+    "pyarrow": "26.0.1",
+    "numpy": "2.5.5"
+  },
+  "parametros": {
+    "repeticoes": 3,
+    "aquecimento": true,
+    "tempo_max_s": 1800.0
+  },
+  "gerado_em": "2026-11-20T20:39:04+00:00",
+  "medicoes": [
+    {
+      "tarefa": "1brc",
+      "formato": "parquet",
+      "engine": "duckdb",
+      "tempos_s": [
+        0.2779399999999441,
+        0.2776359000017692,
+        0.27460639999844716
+      ],
+      "pico_memoria_bytes": 169500672,
+      "valido": true,
+      "motivo": "referência",
+      "erro": null
+    },
+    {
+      "tarefa": "1brc",
+      "formato": "txt",
+      "engine": "python",
+      "tempos_s": [
+        3.7859210000024177,
+        3.6806403000009595,
+        3.6819173000003502
+      ],
+      "pico_memoria_bytes": 3810881536,
+      "valido": true,
+      "motivo": "",
+      "erro": null
+    },
+    {
+      "tarefa": "1brc",
+      "formato": "txt",
+      "engine": "pandas",
+      "tempos_s": [
+        3.932611899999756,
+        3.8895064999996976,
+        3.8720606999995653
+      ],
+      "pico_memoria_bytes": 255004672,
+      "valido": true,
+      "motivo": "",
+      "erro": null
+    },
+    {
+      "tarefa": "1brc",
+      "formato": "txt",
+      "engine": "polars",
+      "tempos_s": [
+        0.6771494999993593,
+        0.6798544999983278,
+        0.6873458000009123
+      ],
+      "pico_memoria_bytes": 1198256128,
+      "valido": true,
+      "motivo": "",
+      "erro": null
+    },
+    {
+      "tarefa": "1brc",
+      "formato": "txt",
+      "engine": "duckdb",
+      "tempos_s": [
+        0.8599706000022707,
+        0.8642030999981216,
+        0.854004700002406
+      ],
+      "pico_memoria_bytes": 590000128,
+      "valido": true,
+      "motivo": "",
+      "erro": null
+    },
+    {
+      "tarefa": "1brc",
+      "formato": "parquet",
+      "engine": "pandas",
+      "tempos_s": [
+        1.5805245000010473,
+        1.5240507000016805,
+        1.5115510999967228
+      ],
+      "pico_memoria_bytes": 226697216,
+      "valido": true,
+      "motivo": "",
+      "erro": null
+    },
+    {
+      "tarefa": "1brc",
+      "formato": "parquet",
+      "engine": "polars",
+      "tempos_s": [
+        0.45792530000107945,
+        0.461998599999788,
+        0.4569844999969064
+      ],
+      "pico_memoria_bytes": 466309120,
+      "valido": true,
+      "motivo": "",
+      "erro": null
+    },
+    {
+      "tarefa": "realista",
+      "formato": "parquet",
+      "engine": "duckdb",
+      "tempos_s": [
+        0.7420569999994768,
+        0.7452822999985074,
+        0.7352223000016238
+      ],
+      "pico_memoria_bytes": 173826048,
+      "valido": true,
+      "motivo": "referência",
+      "erro": null
+    },
+    {
+      "tarefa": "realista",
+      "formato": "parquet",
+      "engine": "pandas",
+      "tempos_s": [
+        6.271417300002213,
+        6.309148999996978,
+        6.28337250000186
+      ],
+      "pico_memoria_bytes": 454189056,
+      "valido": true,
+      "motivo": "",
+      "erro": null
+    },
+    {
+      "tarefa": "realista",
+      "formato": "parquet",
+      "engine": "polars",
+      "tempos_s": [
+        0.8626864999969257,
+        0.8746114000023226,
+        0.86972379999861
+      ],
+      "pico_memoria_bytes": 1104084992,
+      "valido": true,
+      "motivo": "",
+      "erro": null
+    }
+  ]
+}

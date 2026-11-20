@@ -287,3 +287,98 @@ def consultar(
     typer.echo(
         f"\n{numero(resultado.tabela.num_rows)} linhas em {numero(resultado.segundos, 2)} s{aviso}"
     )
+
+
+# --- benchmark ------------------------------------------------------------------------------
+
+
+class TarefaBenchmark(StrEnum):
+    BRC = "1brc"
+    REALISTA = "realista"
+
+
+class FormatoBenchmark(StrEnum):
+    TXT = "txt"
+    PARQUET = "parquet"
+
+
+class EngineBenchmark(StrEnum):
+    PYTHON = "python"
+    PANDAS = "pandas"
+    POLARS = "polars"
+    DUCKDB = "duckdb"
+
+
+@app.command()
+def benchmark(
+    diretorio: DiretorioSimulacao,
+    tarefa: Annotated[list[TarefaBenchmark] | None, typer.Option(help="Padrão: as duas.")] = None,
+    formato: Annotated[
+        list[FormatoBenchmark] | None, typer.Option(help="Padrão: txt e parquet.")
+    ] = None,
+    engine: Annotated[
+        list[EngineBenchmark] | None,
+        typer.Option(help="Padrão: todas. A referência (duckdb) sempre roda, para validar."),
+    ] = None,
+    repeticoes: Annotated[int, typer.Option(help="Medições por combinação.", min=1)] = 3,
+    aquecimento: Annotated[
+        bool, typer.Option(help="Roda uma vez antes de medir, para aquecer o cache.")
+    ] = True,
+    tempo_max: Annotated[
+        float, typer.Option(help="Segundos por medição antes de desistir.", min=1)
+    ] = 1800,
+    resultado: Annotated[
+        Path | None,
+        typer.Option(help="JSON de saída (padrão: <simulação>/benchmark/resultado.json)."),
+    ] = None,
+) -> None:
+    """Compara Python puro, pandas, Polars e DuckDB, validando cada resultado."""
+    from isoterma.benchmark.engines import ENGINES
+    from isoterma.benchmark.orquestrador import executar_benchmark
+    from isoterma.benchmark.tarefas import Formato, Tarefa
+
+    try:
+        medido = executar_benchmark(
+            diretorio,
+            tarefas=[Tarefa(t.value) for t in tarefa] if tarefa else tuple(Tarefa),
+            formatos=[Formato(f.value) for f in formato] if formato else tuple(Formato),
+            engines=[e.value for e in engine] if engine else ENGINES,
+            repeticoes=repeticoes,
+            aquecimento=aquecimento,
+            tempo_max_s=tempo_max,
+            aviso=typer.echo,
+        )
+    except FileNotFoundError as erro:
+        _falhar(erro)
+    destino = resultado or diretorio / "benchmark" / "resultado.json"
+    medido.salvar(destino)
+
+    typer.echo("")
+    for m in medido.medicoes:
+        estado = (
+            "erro" if m.erro else ("ok" if m.valido else ("?" if m.valido is None else "ERRADO"))
+        )
+        mediana = f"{numero(m.mediana_s, 2)} s" if m.mediana_s is not None else "—"
+        typer.echo(f"{m.tarefa:<9} {m.formato:<8} {m.engine:<7} {mediana:>10}  {estado}")
+    typer.echo(f"\nResultado gravado em {destino}")
+    if any(m.valido is False for m in medido.medicoes):
+        typer.echo("Alguma engine produziu um resultado diferente da referência.", err=True)
+        raise typer.Exit(2)
+
+
+@app.command("relatorio-benchmark")
+def relatorio_benchmark(
+    resultados: Annotated[
+        list[Path], typer.Argument(help="JSONs gerados por `isoterma benchmark`.", exists=True)
+    ],
+    saida: Annotated[Path, typer.Option(help="Arquivo Markdown.")] = Path("docs/BENCHMARK.md"),
+) -> None:
+    """Gera o relatório em Markdown a partir dos resultados do benchmark."""
+    from isoterma.benchmark.orquestrador import ResultadoBenchmark
+    from isoterma.benchmark.relatorio import gerar_markdown
+
+    carregados = [ResultadoBenchmark.carregar(r) for r in resultados]
+    carregados.sort(key=lambda r: r.simulacao["leituras"])
+    saida.parent.mkdir(parents=True, exist_ok=True)
+    saida.write_text(gerar_markdown(carregados), encoding="utf-8")
+    typer.echo(f"Relatório gravado em {saida}")
