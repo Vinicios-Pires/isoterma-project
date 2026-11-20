@@ -41,7 +41,7 @@ Pergunta em PT-BR → LLM gera SQL → DuckDB sobre Parquet → resultado + anom
   - [x] Estrutura do pacote, CLI, ferramentas de qualidade e CI
   - [x] [Simulador de data hall](docs/SIMULADOR.md) com incidentes injetados e gabarito, gerando Parquet
   - [x] [Motor de consultas](docs/MOTOR.md): camadas de agregados, consultas de domínio e SQL seguro
-  - [ ] Benchmark com validação cruzada entre engines (Python, pandas, Polars, DuckDB)
+  - [x] [Benchmark](docs/BENCHMARK.md) com validação cruzada entre engines (Python, pandas, Polars, DuckDB)
 - **Fase 2: inteligência**
   - [ ] Camada de IA com provedores plugáveis e benchmark de LLMs
   - [ ] Detecção de anomalias
@@ -70,6 +70,21 @@ uv run isoterma consultar data/demo "SELECT * FROM incidentes ORDER BY inicio"
 O simulador gera **1 bilhão de leituras em cerca de 20 s** num desktop de 6 núcleos
 (`--preset bilhao`). Os detalhes do modelo, dos incidentes e do esquema estão em
 [docs/SIMULADOR.md](docs/SIMULADOR.md).
+
+## Desempenho
+
+Sobre **1 bilhão de leituras**, num desktop com AMD Ryzen 5 5600 (6 núcleos) e 16 GB de RAM:
+
+| | Tempo |
+|---|--:|
+| Gerar a simulação (1,5 GB em Parquet) | 20 s |
+| 1BRC clássico: DuckDB sobre Parquet | 3,7 s |
+| 1BRC clássico: Polars sobre Parquet | 6,9 s |
+| 1BRC clássico: Python puro sobre `.txt` (mmap + multiprocessing) | 69 s |
+| Consultas do motor (resumo, faixa ASHRAE, séries, mapa térmico) | < 1 s |
+
+Todas as engines são conferidas contra a referência a cada execução. A comparação completa,
+com memória, a tarefa realista e o método, está em [docs/BENCHMARK.md](docs/BENCHMARK.md).
 
 ## Desenvolvimento
 
