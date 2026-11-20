@@ -39,7 +39,7 @@ Pergunta em PT-BR → LLM gera SQL → DuckDB sobre Parquet → resultado + anom
 
 - **Fase 1: fundação**
   - [x] Estrutura do pacote, CLI, ferramentas de qualidade e CI
-  - [ ] Simulador de data hall com incidentes injetados, gerando Parquet
+  - [x] [Simulador de data hall](docs/SIMULADOR.md) com incidentes injetados e gabarito, gerando Parquet
   - [ ] Motor de agregação com DuckDB
   - [ ] Benchmark com validação cruzada entre engines (Python, pandas, Polars, DuckDB)
 - **Fase 2: inteligência**
@@ -59,9 +59,13 @@ Requisito: [uv](https://docs.astral.sh/uv/). Ele instala o Python 3.14 sozinho.
 git clone https://github.com/Vinicios-Pires/isoterma-project.git
 cd isoterma-project
 uv sync
-uv run isoterma --help
 uv run isoterma info
+uv run isoterma simular --preset demo   # 30 dias de um hall com 200 racks, em segundos
 ```
+
+O simulador gera **1 bilhão de leituras em cerca de 20 s** num desktop de 6 núcleos
+(`--preset bilhao`). Os detalhes do modelo, dos incidentes e do esquema estão em
+[docs/SIMULADOR.md](docs/SIMULADOR.md).
 
 ## Desenvolvimento
 
@@ -76,7 +80,7 @@ uv run pyright              # checagem de tipos
 ## Estrutura
 
 ```
-src/isoterma/   pacote principal (núcleo, CLI e, em breve, simulador, motor e IA)
+src/isoterma/   pacote principal: CLI, simulador e, em breve, motor e IA
 tests/          testes automatizados
 docs/           documentação, incluindo a evolução do projeto
 legacy/         o projeto original da aula, preservado intocado
