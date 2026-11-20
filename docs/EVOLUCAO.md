@@ -84,9 +84,16 @@ O modelo de IA vê apenas o schema e os resultados agregados, nunca os dados bru
 2. **Camada de IA:** texto → SQL com validação (somente leitura), detecção de anomalias, relatórios explicados, API FastAPI e web React com o mapa térmico.
 3. **Dados reais:** ingestão de fontes como INMET ou Open-Meteo, histórico particionado e alertas.
 
+**Simulador (20/11/2026):** data hall com fileiras entre corredores frio e quente, 5
+sensores por rack (entrada em 3 alturas, saída e potência) e 2 por CRAC, valores em float32,
+oito tipos de incidente com gabarito e umidade adiada para a fase 3. O modelo físico roda em dois
+níveis (física por minuto e leituras interpoladas), com blocos paralelos e determinísticos. Gera
+1 bilhão de leituras em ~20 s, contra os ~10 min do gerador original. Detalhes em
+[SIMULADOR.md](SIMULADOR.md).
+
 ### Decisões em aberto
 
-- Desenho do simulador de data hall (tamanho do hall, sensores por rack, tipos de incidente)
+- Desenho do motor de agregação e do benchmark entre engines
 
 O projeto original da aula está preservado em [`legacy/`](../legacy/) como referência do
 ponto de partida.

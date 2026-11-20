@@ -16,8 +16,11 @@ classifiers = [
 ]
 dependencies = [
     "duckdb>=2.0",
+    "numpy>=2.5.5",
     "pandas>=3.1",
     "polars>=2.1",
+    "pyarrow>=26.0.1",
+    "pydantic>=2.14.3",
     "typer>=0.29",
 ]
 
@@ -62,6 +65,8 @@ select = [
     "SIM", # simplificações
     "RUF", # regras do próprio ruff
 ]
+# Símbolos usados de propósito em textos em português (5 × 3, ΔT = saída − entrada).
+allowed-confusables = ["×", "−"]
 
 [tool.pyright]
 include = ["src", "tests"]
