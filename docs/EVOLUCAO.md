@@ -91,9 +91,16 @@ níveis (física por minuto e leituras interpoladas), com blocos paralelos e det
 1 bilhão de leituras em ~20 s, contra os ~10 min do gerador original. Detalhes em
 [SIMULADOR.md](SIMULADOR.md).
 
+**Motor (20/11/2026):** camadas bronze (leituras) e ouro (agregados por minuto e hora, a
+hora calculada a partir dos minutos), consultas de domínio com escolha automática de camada
+(resumo, mapa térmico, faixa ASHRAE, séries) e SQL seguro: só SELECT, DuckDB travado na pasta da
+simulação e limites de linhas e de tempo. Sobre 1 bilhão de leituras, as consultas de domínio
+respondem em menos de 1 s. Detalhes em [MOTOR.md](MOTOR.md).
+
 ### Decisões em aberto
 
-- Desenho do motor de agregação e do benchmark entre engines
+- Desenho do benchmark entre engines (Python, pandas, Polars e DuckDB, com o 1BRC clássico e uma
+  tarefa realista)
 
 O projeto original da aula está preservado em [`legacy/`](../legacy/) como referência do
 ponto de partida.

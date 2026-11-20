@@ -40,7 +40,7 @@ Pergunta em PT-BR → LLM gera SQL → DuckDB sobre Parquet → resultado + anom
 - **Fase 1: fundação**
   - [x] Estrutura do pacote, CLI, ferramentas de qualidade e CI
   - [x] [Simulador de data hall](docs/SIMULADOR.md) com incidentes injetados e gabarito, gerando Parquet
-  - [ ] Motor de agregação com DuckDB
+  - [x] [Motor de consultas](docs/MOTOR.md): camadas de agregados, consultas de domínio e SQL seguro
   - [ ] Benchmark com validação cruzada entre engines (Python, pandas, Polars, DuckDB)
 - **Fase 2: inteligência**
   - [ ] Camada de IA com provedores plugáveis e benchmark de LLMs
@@ -61,6 +61,10 @@ cd isoterma-project
 uv sync
 uv run isoterma info
 uv run isoterma simular --preset demo   # 30 dias de um hall com 200 racks, em segundos
+uv run isoterma agregar data/demo       # camada de agregados por hora
+uv run isoterma resumo data/demo
+uv run isoterma mapa data/demo --instante 2026-11-07T04:15   # o CRAC-02 falhou às 2h
+uv run isoterma consultar data/demo "SELECT * FROM incidentes ORDER BY inicio"
 ```
 
 O simulador gera **1 bilhão de leituras em cerca de 20 s** num desktop de 6 núcleos
@@ -80,7 +84,7 @@ uv run pyright              # checagem de tipos
 ## Estrutura
 
 ```
-src/isoterma/   pacote principal: CLI, simulador e, em breve, motor e IA
+src/isoterma/   pacote principal: CLI, simulador, motor e, em breve, IA
 tests/          testes automatizados
 docs/           documentação, incluindo a evolução do projeto
 legacy/         o projeto original da aula, preservado intocado

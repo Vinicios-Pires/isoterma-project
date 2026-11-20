@@ -16,6 +16,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from isoterma import __version__
+from isoterma.dados import MANIFESTO
 from isoterma.simulador.config import ConfigSimulacao, TipoIncidente
 from isoterma.simulador.esquema import ESQUEMA
 from isoterma.simulador.fisica import PASSO_DRIVER_S, calcular_drivers
@@ -28,7 +29,6 @@ from isoterma.simulador.layout import (
     tabelas_dimensao,
 )
 
-MANIFESTO = "manifesto.json"
 TIPO_TS = pa.timestamp("ms", tz="UTC")
 MAGNITUDE_PICO_C = (8.0, 25.0)
 TIPOS_DEFEITO_SENSOR = frozenset(

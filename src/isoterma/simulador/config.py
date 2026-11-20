@@ -83,9 +83,9 @@ class Termica(_Modelo):
     fracao_racks_densos: float = Field(default=0.1, ge=0, le=1)
     delta_t_nominal_c: float = Field(default=15.0, gt=0, description="Saída − entrada a 100%")
     constante_tempo_min: float = Field(default=6.0, gt=0, description="Inércia do insuflamento")
-    alcance_crac_m: float = Field(default=4.0, gt=0, description="Decaimento da influência")
+    alcance_crac_m: float = Field(default=1.5, gt=0, description="Decaimento da influência")
     compensacao_vizinhos: float = Field(
-        default=0.4, ge=0, le=1, description="Quanto os outros CRACs cobrem um que falhou"
+        default=0.15, ge=0, le=1, description="Quanto os outros CRACs cobrem um que falhou"
     )
     ruido_temperatura_c: float = Field(default=0.12, ge=0)
     ruido_potencia: float = Field(default=0.005, ge=0, description="Fração da nominal")
