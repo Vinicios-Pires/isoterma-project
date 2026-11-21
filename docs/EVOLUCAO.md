@@ -122,9 +122,15 @@ FastAPI com rotas tipadas (OpenAPI), `perguntar` em streaming (SSE), IA desligad
 limite por IP e teto de gasto diário. Front decidido: React + Vite + TypeScript, Tailwind +
 shadcn/ui, D3 (isotermas) + Recharts, npm. Detalhes em [API.md](API.md).
 
+**Web, parte 1 (21/11/2026):** React 19 + Vite 8 + TypeScript 7, Tailwind 4 + shadcn/ui (Base UI),
+TanStack Query, D3. Painel (indicadores, faixa ASHRAE, linha do tempo dos incidentes) e Mapa
+térmico com isotermas interpoladas, hall girado quando mais fundo que largo, controle de tempo
+com play e estado na URL. Tipos gerados do OpenAPI, com teste que falha se divergirem. Visual de
+console de operação, temas claro e escuro. Detalhes em [WEB.md](WEB.md).
+
 ### Decisões em aberto
 
-- Web: estrutura, Painel e Mapa de isotermas; depois detalhe de rack/CRAC e o chat
+- Web, parte 2: detalhe de rack e CRAC (séries com Recharts) e o chat com a IA
 - Detecção de anomalias medida contra o gabarito
 - Deploy da demo pública (Cloud Run + Cloudflare Pages)
 

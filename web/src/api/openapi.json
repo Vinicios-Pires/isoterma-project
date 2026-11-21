@@ -1,0 +1,1300 @@
+{
+  "components": {
+    "schemas": {
+      "CracPlanta": {
+        "properties": {
+          "crac_id": {
+            "title": "Crac Id",
+            "type": "string"
+          },
+          "setpoint_c": {
+            "title": "Setpoint C",
+            "type": "number"
+          },
+          "x_m": {
+            "title": "X M",
+            "type": "number"
+          },
+          "y_m": {
+            "title": "Y M",
+            "type": "number"
+          }
+        },
+        "required": [
+          "crac_id",
+          "x_m",
+          "y_m",
+          "setpoint_c"
+        ],
+        "title": "CracPlanta",
+        "type": "object"
+      },
+      "Estatistica": {
+        "properties": {
+          "maximo": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maximo"
+          },
+          "media": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Media"
+          },
+          "minimo": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minimo"
+          }
+        },
+        "required": [
+          "minimo",
+          "media",
+          "maximo"
+        ],
+        "title": "Estatistica",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "Incidente": {
+        "properties": {
+          "alvo": {
+            "title": "Alvo",
+            "type": "string"
+          },
+          "alvo_tipo": {
+            "title": "Alvo Tipo",
+            "type": "string"
+          },
+          "descricao": {
+            "title": "Descricao",
+            "type": "string"
+          },
+          "fim": {
+            "format": "date-time",
+            "title": "Fim",
+            "type": "string"
+          },
+          "incidente_id": {
+            "title": "Incidente Id",
+            "type": "integer"
+          },
+          "inicio": {
+            "format": "date-time",
+            "title": "Inicio",
+            "type": "string"
+          },
+          "intensidade": {
+            "title": "Intensidade",
+            "type": "number"
+          },
+          "tipo": {
+            "title": "Tipo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "incidente_id",
+          "tipo",
+          "alvo_tipo",
+          "alvo",
+          "inicio",
+          "fim",
+          "intensidade",
+          "descricao"
+        ],
+        "title": "Incidente",
+        "type": "object"
+      },
+      "MapaTermico": {
+        "properties": {
+          "altura": {
+            "anyOf": [
+              {
+                "enum": [
+                  "base",
+                  "meio",
+                  "topo"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Altura"
+          },
+          "instante": {
+            "format": "date-time",
+            "title": "Instante",
+            "type": "string"
+          },
+          "racks": {
+            "items": {
+              "$ref": "#/components/schemas/ValorRack"
+            },
+            "title": "Racks",
+            "type": "array"
+          },
+          "tipo": {
+            "enum": [
+              "temp_entrada",
+              "temp_saida",
+              "potencia_kw"
+            ],
+            "title": "Tipo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instante",
+          "tipo",
+          "altura",
+          "racks"
+        ],
+        "title": "MapaTermico",
+        "type": "object"
+      },
+      "Pergunta": {
+        "properties": {
+          "pergunta": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Pergunta",
+            "type": "string"
+          }
+        },
+        "required": [
+          "pergunta"
+        ],
+        "title": "Pergunta",
+        "type": "object"
+      },
+      "Planta": {
+        "properties": {
+          "cracs": {
+            "items": {
+              "$ref": "#/components/schemas/CracPlanta"
+            },
+            "title": "Cracs",
+            "type": "array"
+          },
+          "largura_m": {
+            "description": "Extensão do hall no eixo x, incluindo os CRACs",
+            "title": "Largura M",
+            "type": "number"
+          },
+          "profundidade_m": {
+            "description": "Extensão do hall no eixo y, incluindo os CRACs",
+            "title": "Profundidade M",
+            "type": "number"
+          },
+          "racks": {
+            "items": {
+              "$ref": "#/components/schemas/RackPlanta"
+            },
+            "title": "Racks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "racks",
+          "cracs",
+          "largura_m",
+          "profundidade_m"
+        ],
+        "title": "Planta",
+        "type": "object"
+      },
+      "PontoSerie": {
+        "properties": {
+          "inicio": {
+            "format": "date-time",
+            "title": "Inicio",
+            "type": "string"
+          },
+          "leituras": {
+            "title": "Leituras",
+            "type": "integer"
+          },
+          "maximo": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maximo"
+          },
+          "media": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Media"
+          },
+          "minimo": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minimo"
+          },
+          "sensor": {
+            "title": "Sensor",
+            "type": "string"
+          },
+          "tipo": {
+            "title": "Tipo",
+            "type": "string"
+          },
+          "unidade": {
+            "title": "Unidade",
+            "type": "string"
+          }
+        },
+        "required": [
+          "inicio",
+          "sensor",
+          "tipo",
+          "unidade",
+          "minimo",
+          "media",
+          "maximo",
+          "leituras"
+        ],
+        "title": "PontoSerie",
+        "type": "object"
+      },
+      "RackForaDaFaixa": {
+        "properties": {
+          "fileira": {
+            "title": "Fileira",
+            "type": "string"
+          },
+          "minimo_c": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minimo C"
+          },
+          "minutos_abaixo": {
+            "title": "Minutos Abaixo",
+            "type": "number"
+          },
+          "minutos_acima": {
+            "title": "Minutos Acima",
+            "type": "number"
+          },
+          "pico_c": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pico C"
+          },
+          "primeira_vez": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Primeira Vez"
+          },
+          "rack_id": {
+            "title": "Rack Id",
+            "type": "string"
+          },
+          "ultima_vez": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ultima Vez"
+          },
+          "zona_crac": {
+            "title": "Zona Crac",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rack_id",
+          "fileira",
+          "zona_crac",
+          "minutos_acima",
+          "minutos_abaixo",
+          "pico_c",
+          "minimo_c",
+          "primeira_vez",
+          "ultima_vez"
+        ],
+        "title": "RackForaDaFaixa",
+        "type": "object"
+      },
+      "RackPlanta": {
+        "properties": {
+          "fileira": {
+            "title": "Fileira",
+            "type": "string"
+          },
+          "perfil": {
+            "title": "Perfil",
+            "type": "string"
+          },
+          "posicao": {
+            "title": "Posicao",
+            "type": "integer"
+          },
+          "potencia_nominal_kw": {
+            "title": "Potencia Nominal Kw",
+            "type": "number"
+          },
+          "rack_id": {
+            "title": "Rack Id",
+            "type": "string"
+          },
+          "x_m": {
+            "title": "X M",
+            "type": "number"
+          },
+          "y_m": {
+            "title": "Y M",
+            "type": "number"
+          },
+          "zona_crac": {
+            "title": "Zona Crac",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rack_id",
+          "fileira",
+          "posicao",
+          "x_m",
+          "y_m",
+          "potencia_nominal_kw",
+          "perfil",
+          "zona_crac"
+        ],
+        "title": "RackPlanta",
+        "type": "object"
+      },
+      "Resumo": {
+        "properties": {
+          "cracs": {
+            "title": "Cracs",
+            "type": "integer"
+          },
+          "fim": {
+            "format": "date-time",
+            "title": "Fim",
+            "type": "string"
+          },
+          "fonte": {
+            "title": "Fonte",
+            "type": "string"
+          },
+          "inicio": {
+            "format": "date-time",
+            "title": "Inicio",
+            "type": "string"
+          },
+          "leituras": {
+            "title": "Leituras",
+            "type": "integer"
+          },
+          "leituras_nulas": {
+            "title": "Leituras Nulas",
+            "type": "integer"
+          },
+          "por_tipo": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Estatistica"
+            },
+            "title": "Por Tipo",
+            "type": "object"
+          },
+          "potencia_media_total_kw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Potencia Media Total Kw"
+          },
+          "racks": {
+            "title": "Racks",
+            "type": "integer"
+          },
+          "racks_abaixo_da_faixa": {
+            "title": "Racks Abaixo Da Faixa",
+            "type": "integer"
+          },
+          "racks_acima_da_faixa": {
+            "title": "Racks Acima Da Faixa",
+            "type": "integer"
+          },
+          "sensores": {
+            "title": "Sensores",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "inicio",
+          "fim",
+          "fonte",
+          "racks",
+          "cracs",
+          "sensores",
+          "leituras",
+          "leituras_nulas",
+          "potencia_media_total_kw",
+          "racks_acima_da_faixa",
+          "racks_abaixo_da_faixa",
+          "por_tipo"
+        ],
+        "title": "Resumo",
+        "type": "object"
+      },
+      "Saude": {
+        "properties": {
+          "llm": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Llm"
+          },
+          "simulacoes": {
+            "title": "Simulacoes",
+            "type": "integer"
+          },
+          "status": {
+            "const": "ok",
+            "title": "Status",
+            "type": "string"
+          },
+          "versao": {
+            "title": "Versao",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "versao",
+          "simulacoes",
+          "llm"
+        ],
+        "title": "Saude",
+        "type": "object"
+      },
+      "Serie": {
+        "properties": {
+          "alvo": {
+            "title": "Alvo",
+            "type": "string"
+          },
+          "pontos": {
+            "items": {
+              "$ref": "#/components/schemas/PontoSerie"
+            },
+            "title": "Pontos",
+            "type": "array"
+          }
+        },
+        "required": [
+          "alvo",
+          "pontos"
+        ],
+        "title": "Serie",
+        "type": "object"
+      },
+      "Simulacao": {
+        "properties": {
+          "camadas": {
+            "description": "Tabelas de dados disponíveis: leituras e agregados",
+            "items": {
+              "type": "string"
+            },
+            "title": "Camadas",
+            "type": "array"
+          },
+          "cracs": {
+            "title": "Cracs",
+            "type": "integer"
+          },
+          "fim": {
+            "format": "date-time",
+            "title": "Fim",
+            "type": "string"
+          },
+          "fuso": {
+            "title": "Fuso",
+            "type": "string"
+          },
+          "inicio": {
+            "format": "date-time",
+            "title": "Inicio",
+            "type": "string"
+          },
+          "intervalo_s": {
+            "title": "Intervalo S",
+            "type": "integer"
+          },
+          "leituras": {
+            "title": "Leituras",
+            "type": "integer"
+          },
+          "nome": {
+            "title": "Nome",
+            "type": "string"
+          },
+          "racks": {
+            "title": "Racks",
+            "type": "integer"
+          },
+          "sensores": {
+            "title": "Sensores",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "nome",
+          "racks",
+          "cracs",
+          "sensores",
+          "leituras",
+          "inicio",
+          "fim",
+          "intervalo_s",
+          "fuso",
+          "camadas"
+        ],
+        "title": "Simulacao",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "ValorRack": {
+        "properties": {
+          "faixa": {
+            "anyOf": [
+              {
+                "enum": [
+                  "acima",
+                  "abaixo",
+                  "ok"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Faixa"
+          },
+          "fileira": {
+            "title": "Fileira",
+            "type": "string"
+          },
+          "posicao": {
+            "title": "Posicao",
+            "type": "integer"
+          },
+          "rack_id": {
+            "title": "Rack Id",
+            "type": "string"
+          },
+          "valor": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valor"
+          },
+          "x_m": {
+            "title": "X M",
+            "type": "number"
+          },
+          "y_m": {
+            "title": "Y M",
+            "type": "number"
+          },
+          "zona_crac": {
+            "title": "Zona Crac",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rack_id",
+          "fileira",
+          "posicao",
+          "x_m",
+          "y_m",
+          "zona_crac",
+          "valor",
+          "faixa"
+        ],
+        "title": "ValorRack",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Inteligência térmica para data centers: veja, entenda e pergunte.",
+    "title": "Isoterma",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/saude": {
+      "get": {
+        "operationId": "saude_api_saude_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Saude"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Saude"
+      }
+    },
+    "/api/simulacoes": {
+      "get": {
+        "operationId": "simulacoes_api_simulacoes_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Simulacao"
+                  },
+                  "title": "Response Simulacoes Api Simulacoes Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Simulacoes"
+      }
+    },
+    "/api/{simulacao}/fora-da-faixa": {
+      "get": {
+        "operationId": "fora_da_faixa_api__simulacao__fora_da_faixa_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "simulacao",
+            "required": true,
+            "schema": {
+              "title": "Simulacao",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Horário local do hall se vier sem fuso",
+            "in": "query",
+            "name": "inicio",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Horário local do hall se vier sem fuso",
+              "title": "Inicio"
+            }
+          },
+          {
+            "description": "Fim da janela (exclusivo)",
+            "in": "query",
+            "name": "fim",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Fim da janela (exclusivo)",
+              "title": "Fim"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RackForaDaFaixa"
+                  },
+                  "title": "Response Fora Da Faixa Api  Simulacao  Fora Da Faixa Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fora Da Faixa"
+      }
+    },
+    "/api/{simulacao}/gabarito": {
+      "get": {
+        "description": "Os incidentes injetados pelo simulador. Só existe porque os dados são simulados: serve para comparar o que aconteceu com o que o produto detectou. A IA não tem acesso a ele.",
+        "operationId": "gabarito_api__simulacao__gabarito_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "simulacao",
+            "required": true,
+            "schema": {
+              "title": "Simulacao",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Incidente"
+                  },
+                  "title": "Response Gabarito Api  Simulacao  Gabarito Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Gabarito"
+      }
+    },
+    "/api/{simulacao}/mapa": {
+      "get": {
+        "operationId": "mapa_api__simulacao__mapa_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "simulacao",
+            "required": true,
+            "schema": {
+              "title": "Simulacao",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Padrão: o fim da simulação",
+            "in": "query",
+            "name": "instante",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Padrão: o fim da simulação",
+              "title": "Instante"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tipo",
+            "required": false,
+            "schema": {
+              "default": "temp_entrada",
+              "enum": [
+                "temp_entrada",
+                "temp_saida",
+                "potencia_kw"
+              ],
+              "title": "Tipo",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Só para temp_entrada",
+            "in": "query",
+            "name": "altura",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "base",
+                    "meio",
+                    "topo"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Só para temp_entrada",
+              "title": "Altura"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MapaTermico"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Mapa"
+      }
+    },
+    "/api/{simulacao}/perguntar": {
+      "post": {
+        "description": "Eventos SSE: `passo` (cada consulta do agente, ao vivo), `resposta` (o texto final, com uso e custo) ou `erro`.",
+        "operationId": "perguntar_api__simulacao__perguntar_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "simulacao",
+            "required": true,
+            "schema": {
+              "title": "Simulacao",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Pergunta"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "text/event-stream": {
+                "itemSchema": {
+                  "properties": {
+                    "data": {
+                      "type": "string"
+                    },
+                    "event": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "retry": {
+                      "minimum": 0,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Perguntar"
+      }
+    },
+    "/api/{simulacao}/planta": {
+      "get": {
+        "operationId": "planta_api__simulacao__planta_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "simulacao",
+            "required": true,
+            "schema": {
+              "title": "Simulacao",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Planta"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Planta"
+      }
+    },
+    "/api/{simulacao}/resumo": {
+      "get": {
+        "operationId": "resumo_api__simulacao__resumo_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "simulacao",
+            "required": true,
+            "schema": {
+              "title": "Simulacao",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Horário local do hall se vier sem fuso",
+            "in": "query",
+            "name": "inicio",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Horário local do hall se vier sem fuso",
+              "title": "Inicio"
+            }
+          },
+          {
+            "description": "Fim da janela (exclusivo)",
+            "in": "query",
+            "name": "fim",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Fim da janela (exclusivo)",
+              "title": "Fim"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Resumo"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Resumo"
+      }
+    },
+    "/api/{simulacao}/serie": {
+      "get": {
+        "operationId": "serie_api__simulacao__serie_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "simulacao",
+            "required": true,
+            "schema": {
+              "title": "Simulacao",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Sensor, rack ou CRAC, ex.: C-07",
+            "in": "query",
+            "name": "alvo",
+            "required": true,
+            "schema": {
+              "description": "Sensor, rack ou CRAC, ex.: C-07",
+              "title": "Alvo",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Horário local do hall se vier sem fuso",
+            "in": "query",
+            "name": "inicio",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Horário local do hall se vier sem fuso",
+              "title": "Inicio"
+            }
+          },
+          {
+            "description": "Fim da janela (exclusivo)",
+            "in": "query",
+            "name": "fim",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Fim da janela (exclusivo)",
+              "title": "Fim"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pontos",
+            "required": false,
+            "schema": {
+              "default": 500,
+              "maximum": 2000,
+              "minimum": 2,
+              "title": "Pontos",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Serie"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Serie"
+      }
+    }
+  }
+}
