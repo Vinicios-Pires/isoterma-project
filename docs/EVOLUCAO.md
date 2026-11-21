@@ -105,10 +105,17 @@ memória, e todo resultado é conferido contra a referência. O relatório
 ponto mais fraco do projeto original: tempos sem validação e engines que imprimiam resultados
 em formatos diferentes.
 
+**Camada de IA (21/11/2026):** agente com ferramentas (as consultas do motor e o SQL seguro),
+com laço próprio e independente de provedor. Adaptadores para Claude (padrão: Haiku 5.5), OpenAI
+(Responses API, sem guardar dados) e Gemini, além de um provedor falso para testes e demonstração.
+O gabarito fica oculto da IA até para `read_parquet` direto. A avaliação de LLMs gera perguntas
+de fatos, investigação e diagnóstico a partir dos próprios dados. Detalhes em [IA.md](IA.md).
+
 ### Decisões em aberto
 
-- Fase 2: desenho da camada de IA (provedores, prompt com o dicionário de dados, laço de correção
-  do SQL e benchmark de LLMs)
+- Rodar a avaliação real (depende das chaves de API e do orçamento)
+- Fase 2, próximos passos: API (FastAPI), web (React) com o mapa de isotermas, detecção de
+  anomalias medida contra o gabarito e demo pública
 
 O projeto original da aula está preservado em [`legacy/`](../legacy/) como referência do
 ponto de partida.

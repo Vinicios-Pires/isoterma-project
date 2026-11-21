@@ -37,10 +37,13 @@ class Hall:
     """Uma simulação aberta para consulta, sempre por uma conexão em modo seguro.
 
     Datas sem fuso são interpretadas no horário local do hall (o fuso da simulação).
+    Com ``ocultar_gabarito=True`` (o modo da IA), a tabela ``incidentes`` não existe: o
+    agente enxerga o hall como enxergaria um data center real.
     """
 
-    def __init__(self, diretorio: Path) -> None:
+    def __init__(self, diretorio: Path, *, ocultar_gabarito: bool = False) -> None:
         self.diretorio = diretorio.resolve()
+        self.ocultar_gabarito = ocultar_gabarito
         self.manifesto = ler_manifesto(self.diretorio)
         periodo = self.manifesto["periodo"]
         self.inicio = datetime.fromisoformat(periodo["inicio"]).astimezone(UTC)
@@ -52,7 +55,7 @@ class Hall:
             for nome in GRANULARIDADES
             if pasta_agregados(self.diretorio, nome).is_dir()
         ]
-        self._db = conectar(self.diretorio, seguro=True)
+        self._db = conectar(self.diretorio, seguro=True, com_gabarito=not ocultar_gabarito)
 
     def __enter__(self) -> Self:
         return self
@@ -312,6 +315,8 @@ class Hall:
     def esquema(self) -> dict[str, dict[str, str]]:
         """Dicionário de dados das tabelas disponíveis nesta simulação."""
         esquema = dict(self.manifesto["esquema"])
+        if self.ocultar_gabarito:
+            esquema.pop("incidentes", None)
         for camada in self.camadas:
             if not camada.bruta:
                 esquema[camada.tabela] = ESQUEMA_AGREGADOS
