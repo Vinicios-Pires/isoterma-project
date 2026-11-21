@@ -45,7 +45,8 @@ Pergunta em PT-BR → LLM gera SQL → DuckDB sobre Parquet → resultado + anom
 - **Fase 2: inteligência**
   - [x] [Camada de IA](docs/IA.md): agente com ferramentas, Claude, OpenAI e Gemini plugáveis, e avaliação de LLMs
   - [ ] Detecção de anomalias
-  - [ ] API (FastAPI) e web (React + Vite + TypeScript) com o mapa térmico
+  - [x] [API](docs/API.md) (FastAPI): o motor e a IA por HTTP, com streaming das consultas do agente
+  - [ ] Web (React + Vite + TypeScript) com o mapa de isotermas
   - [ ] Demo pública: DuckDB-WASM no navegador, Cloudflare Pages + R2, Cloud Run
 - **Fase 3: mundo real**
   - [ ] Clima externo real (Open-Meteo/INMET) como entrada do simulador
@@ -111,7 +112,7 @@ uv run pyright              # checagem de tipos
 ## Estrutura
 
 ```
-src/isoterma/   pacote principal: CLI, simulador, motor, benchmark e IA
+src/isoterma/   pacote principal: CLI, simulador, motor, benchmark, IA e API
 tests/          testes automatizados
 docs/           documentação, incluindo a evolução do projeto
 legacy/         o projeto original da aula, preservado intocado

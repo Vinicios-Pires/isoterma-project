@@ -34,6 +34,7 @@ Guia de todos os comandos da linha de comando, na ordem em que costumam ser usad
 | [`perguntar`](#perguntar) | pergunta em português, respondida pela IA | **sim**, com provedor real |
 | [`avaliar-ia`](#avaliar-ia) | mede quanto cada modelo de IA acerta | **sim**, com provedor real |
 | [`relatorio-ia`](#relatorio-ia) | gera o `docs/AVALIACAO_IA.md` | não |
+| [`servir`](#servir) | sobe a API HTTP para a web | só se a IA estiver ligada |
 
 Um roteiro completo, do zero até a primeira pergunta:
 
@@ -310,6 +311,35 @@ uv run isoterma relatorio-ia docs/avaliacao/demo-v2.json docs/avaliacao/demo-v1.
 | Opção | O que faz | Padrão |
 |---|---|---|
 | `--saida` | arquivo Markdown de saída | `docs/AVALIACAO_IA.md` |
+
+---
+
+## API
+
+### `servir`
+
+Sobe a API HTTP que a web usa: as consultas do motor e o agente de IA, com documentação
+interativa em `http://127.0.0.1:8000/docs`. Recebe a pasta que contém as simulações (`data`, por
+padrão) e serve todas elas. Detalhes das rotas em [API.md](API.md).
+
+```bash
+uv sync --extra api --extra claude
+uv run isoterma servir                                   # sem IA
+uv run isoterma servir data --llm claude                 # com a IA
+uv run isoterma servir --porta 9000 --origem https://meu-front.dev
+```
+
+| Opção | O que faz | Padrão |
+|---|---|---|
+| `--host` | endereço de escuta; use `0.0.0.0` para aceitar conexões de fora da máquina | `127.0.0.1` |
+| `--porta` | porta HTTP | 8000 |
+| `--llm` | provedor da IA, como no `perguntar` | `ISOTERMA_LLM`; sem nenhum dos dois, IA desligada |
+| `--perguntas-por-hora` | limite de perguntas à IA por IP | 20 |
+| `--teto-diario` | teto de gasto estimado da IA por dia, em dólares | 1,0 |
+| `--origem` | origem liberada no CORS; repita para várias | o Vite local (`http://localhost:5173`) |
+| `--atras-de-proxy` | identifica o IP do cliente pelo `X-Forwarded-For` | não |
+
+Para parar o servidor, use Ctrl+C.
 
 ---
 
