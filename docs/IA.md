@@ -85,23 +85,35 @@ pergunta ──► modelo ──► chamadas de ferramenta ──► motor (Hall
 
 `isoterma avaliar-ia` mede quanto cada modelo acerta. As perguntas são **geradas a partir da
 simulação**: as respostas esperadas saem do motor e do gabarito de incidentes, então valem para
-qualquer seed. Na demo são 17 perguntas, em três categorias:
+qualquer seed. A resposta é corrigida pela última linha `RESPOSTA: <valor>`, que a avaliação pede
+ao agente. Os resultados estão em [AVALIACAO_IA.md](AVALIACAO_IA.md).
+
+Na v2, o conjunto atual, a demo tem 19 perguntas em quatro categorias:
 
 | Categoria | Exemplos | Correção |
 |---|---|---|
 | Fatos | quantos racks há; qual CRAC refrigera um rack; temperatura média; sensores com falta de leitura | número com tolerância ou texto exato |
 | Investigação | quais racks passaram de 27 °C por um evento real em volta da falha de CRAC; a que horas começou | conjunto (Jaccard ≥ 0,85) e horário (± 3 min) |
-| Diagnóstico | o que aconteceu com um alvo numa janela: `falha_crac`, `super_refrigeracao`, `sobrecarga`, `recirculacao`, `defeito_sensor` ou `normal` | opção exata |
+| Diagnóstico | *houve algo anormal no rack X entre ... e ...? Se houve, qual a causa?*: `falha_crac`, `super_refrigeracao`, `sobrecarga`, `recirculacao`, `defeito_sensor` ou `normal` | opção exata |
+| Descoberta | *quais incidentes aconteceram no dia X?*, sem pista nenhuma | F1 ≥ 0,7 entre os `categoria:alvo` apontados e o gabarito |
 
-O diagnóstico tem uma pergunta por tipo de incidente presente e janelas de controle sem
-nenhum incidente, em que a resposta certa é `normal`. Assim um modelo que vê problema em tudo
-também erra. A resposta é corrigida pela última linha `RESPOSTA: <valor>`, que a avaliação pede
-ao agente.
+- **O diagnóstico pergunta sempre pelo rack.** Num defeito de sensor, o rack é o dono do sensor;
+  num incidente de CRAC, é o rack da zona mais perto dele. O modelo precisa descobrir sozinho
+  se a causa é um sensor, o CRAC ou o próprio rack. Incidentes que coincidem com outro no mesmo
+  rack ficam de fora, porque a resposta seria ambígua.
+- **Três controles** fazem a mesma pergunta para racks e janelas sem nenhum incidente, em que a
+  resposta certa é `normal`. Um modelo que vê problema em tudo também erra.
+- **A descoberta** escolhe o dia mais variado da simulação, com 2 a 8 incidentes. Um defeito de
+  sensor conta se o modelo apontar o sensor ou o rack dele.
+
+A **v1**, o primeiro conjunto, perguntava pelo alvo do incidente (*o que aconteceu com o sensor
+X?*), o que já entregava metade do diagnóstico, e o Claude Haiku 5.5 acertou as 17 perguntas.
+Ela continua disponível (`--versao v1`) e o resultado dela fica no relatório como registro.
 
 ```bash
 uv run isoterma avaliar-ia data/demo --llm claude --amostra 3     # estima o custo antes
-uv run isoterma avaliar-ia data/demo --llm claude --llm gemini:<modelo> --resultado docs/avaliacao/demo.json
-uv run isoterma relatorio-ia docs/avaliacao/demo.json --saida docs/AVALIACAO_IA.md
+uv run isoterma avaliar-ia data/demo --llm claude --llm gemini:<modelo> --resultado docs/avaliacao/demo-v2.json
+uv run isoterma relatorio-ia docs/avaliacao/demo-v2.json docs/avaliacao/demo-v1.json
 ```
 
 `avaliar-ia` não tem provedor padrão, para não gastar sem querer. Registra acerto, tempo,

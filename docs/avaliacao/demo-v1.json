@@ -1,0 +1,549 @@
+{
+  "simulacao": "demo",
+  "gerado_em": "2026-11-21T13:43:05+00:00",
+  "isoterma": "0.1.0",
+  "questoes": [
+    {
+      "id": "racks",
+      "categoria": "fatos",
+      "pergunta": "Quantos racks há no hall?",
+      "formato": "O valor deve ser só o número, sem unidade.",
+      "tipo": "numero",
+      "esperado": 200,
+      "tolerancia": 0.0
+    },
+    {
+      "id": "zona",
+      "categoria": "fatos",
+      "pergunta": "Qual CRAC refrigera principalmente o rack F-01?",
+      "formato": "O valor deve ser o identificador do CRAC, como CRAC-01.",
+      "tipo": "texto",
+      "esperado": "CRAC-04",
+      "tolerancia": 0.0
+    },
+    {
+      "id": "potencia_nominal",
+      "categoria": "fatos",
+      "pergunta": "Qual rack tem a maior potência nominal?",
+      "formato": "O valor deve ser o identificador do rack, como C-07.",
+      "tipo": "texto",
+      "esperado": "A-16",
+      "tolerancia": 0.0
+    },
+    {
+      "id": "media_entrada",
+      "categoria": "fatos",
+      "pergunta": "Qual foi a temperatura média de entrada dos racks no período inteiro, em °C?",
+      "formato": "O valor deve ser só o número, sem unidade. Use uma casa decimal.",
+      "tipo": "numero",
+      "esperado": 20.21,
+      "tolerancia": 0.15
+    },
+    {
+      "id": "potencia_total",
+      "categoria": "fatos",
+      "pergunta": "Qual foi a potência média total do hall no período, em kW?",
+      "formato": "O valor deve ser só o número, sem unidade.",
+      "tipo": "numero",
+      "esperado": 1020.0,
+      "tolerancia": 10.200000000000001
+    },
+    {
+      "id": "sensores_sem_leitura",
+      "categoria": "fatos",
+      "pergunta": "Quantos sensores ficaram sem leitura em algum momento do período?",
+      "formato": "O valor deve ser só o número, sem unidade.",
+      "tipo": "numero",
+      "esperado": 4,
+      "tolerancia": 0.0
+    },
+    {
+      "id": "racks_quentes",
+      "categoria": "investigacao",
+      "pergunta": "Quais racks tiveram a entrada acima de 27 °C entre 07/11 01:00 e 07/11 06:00 (horário local) por um evento térmico real? Desconsidere defeitos de sensor.",
+      "formato": "O valor deve ser a lista dos racks separados por vírgula, como A-01, A-02.",
+      "tipo": "conjunto",
+      "esperado": [
+        "A-08",
+        "A-09",
+        "A-10",
+        "A-11",
+        "A-12",
+        "A-13",
+        "B-09",
+        "B-10",
+        "B-11",
+        "B-12",
+        "B-13",
+        "C-09",
+        "C-10",
+        "C-11"
+      ],
+      "tolerancia": 0.85
+    },
+    {
+      "id": "primeira_vez",
+      "categoria": "investigacao",
+      "pergunta": "Entre 07/11 01:00 e 07/11 06:00 (horário local), a que horas a entrada de algum rack passou de 27 °C pela primeira vez?",
+      "formato": "O valor deve ser o horário local no formato HH:MM.",
+      "tipo": "horario",
+      "esperado": "02:11",
+      "tolerancia": 3
+    },
+    {
+      "id": "diagnostico_rack_sobrecarregado",
+      "categoria": "diagnostico",
+      "pergunta": "O que aconteceu com o rack F-15 entre 03/11 às 13:59 e 03/11 às 19:38 (horário local)?",
+      "formato": "O valor deve ser uma destas opções: falha_crac, super_refrigeracao, sobrecarga, recirculacao, defeito_sensor, normal.",
+      "tipo": "opcao",
+      "esperado": "sobrecarga",
+      "tolerancia": 0.0
+    },
+    {
+      "id": "diagnostico_falha_crac",
+      "categoria": "diagnostico",
+      "pergunta": "O que aconteceu com o CRAC-05 entre 04/11 às 02:01 e 04/11 às 04:00 (horário local)?",
+      "formato": "O valor deve ser uma destas opções: falha_crac, super_refrigeracao, sobrecarga, recirculacao, defeito_sensor, normal.",
+      "tipo": "opcao",
+      "esperado": "falha_crac",
+      "tolerancia": 0.0
+    },
+    {
+      "id": "diagnostico_sensor_picos",
+      "categoria": "diagnostico",
+      "pergunta": "O que aconteceu com o sensor G-07/entrada-topo entre 07/11 às 02:50 e 07/11 às 08:29 (horário local)?",
+      "formato": "O valor deve ser uma destas opções: falha_crac, super_refrigeracao, sobrecarga, recirculacao, defeito_sensor, normal.",
+      "tipo": "opcao",
+      "esperado": "defeito_sensor",
+      "tolerancia": 0.0
+    },
+    {
+      "id": "diagnostico_super_refrigeracao",
+      "categoria": "diagnostico",
+      "pergunta": "O que aconteceu com o CRAC-05 entre 09/11 às 18:42 e 11/11 às 19:24 (horário local)?",
+      "formato": "O valor deve ser uma destas opções: falha_crac, super_refrigeracao, sobrecarga, recirculacao, defeito_sensor, normal.",
+      "tipo": "opcao",
+      "esperado": "super_refrigeracao",
+      "tolerancia": 0.0
+    },
+    {
+      "id": "diagnostico_sensor_congelado",
+      "categoria": "diagnostico",
+      "pergunta": "O que aconteceu com o sensor F-13/saida entre 12/11 às 17:31 e 14/11 às 08:23 (horário local)?",
+      "formato": "O valor deve ser uma destas opções: falha_crac, super_refrigeracao, sobrecarga, recirculacao, defeito_sensor, normal.",
+      "tipo": "opcao",
+      "esperado": "defeito_sensor",
+      "tolerancia": 0.0
+    },
+    {
+      "id": "diagnostico_sensor_sem_leitura",
+      "categoria": "diagnostico",
+      "pergunta": "O que aconteceu com o sensor J-14/entrada-topo entre 18/11 às 19:42 e 18/11 às 21:26 (horário local)?",
+      "formato": "O valor deve ser uma destas opções: falha_crac, super_refrigeracao, sobrecarga, recirculacao, defeito_sensor, normal.",
+      "tipo": "opcao",
+      "esperado": "defeito_sensor",
+      "tolerancia": 0.0
+    },
+    {
+      "id": "diagnostico_sensor_deriva",
+      "categoria": "diagnostico",
+      "pergunta": "O que aconteceu com o sensor E-15/entrada-base entre 27/11 às 13:22 e 30/11 às 11:14 (horário local)?",
+      "formato": "O valor deve ser uma destas opções: falha_crac, super_refrigeracao, sobrecarga, recirculacao, defeito_sensor, normal.",
+      "tipo": "opcao",
+      "esperado": "defeito_sensor",
+      "tolerancia": 0.0
+    },
+    {
+      "id": "controle_A-01",
+      "categoria": "diagnostico",
+      "pergunta": "O que aconteceu com o rack A-01 entre 02/11 às 13:00 e 02/11 às 16:00 (horário local)?",
+      "formato": "O valor deve ser uma destas opções: falha_crac, super_refrigeracao, sobrecarga, recirculacao, defeito_sensor, normal.",
+      "tipo": "opcao",
+      "esperado": "normal",
+      "tolerancia": 0.0
+    },
+    {
+      "id": "controle_A-08",
+      "categoria": "diagnostico",
+      "pergunta": "O que aconteceu com o rack A-08 entre 05/11 às 21:00 e 06/11 às 00:00 (horário local)?",
+      "formato": "O valor deve ser uma destas opções: falha_crac, super_refrigeracao, sobrecarga, recirculacao, defeito_sensor, normal.",
+      "tipo": "opcao",
+      "esperado": "normal",
+      "tolerancia": 0.0
+    }
+  ],
+  "tentativas": [
+    {
+      "questao": "racks",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "200",
+      "esperado": 200,
+      "segundos": 2.2620248000002903,
+      "turnos": 2,
+      "ferramentas": 1,
+      "uso": {
+        "entrada": 6,
+        "saida": 228,
+        "cache_leitura": 8344,
+        "cache_escrita": 178
+      },
+      "custo_usd": 0.00022029,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "O hall tem 200 racks, distribuídos em 10 fileiras (A a J), com 20 racks por fileira. A contagem vem da tabela de cadastro de racks.\n\nRESPOSTA: 200"
+    },
+    {
+      "questao": "zona",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "CRAC-04",
+      "esperado": "CRAC-04",
+      "segundos": 13.506437500000175,
+      "turnos": 5,
+      "ferramentas": 6,
+      "uso": {
+        "entrada": 12,
+        "saida": 2611,
+        "cache_leitura": 32340,
+        "cache_escrita": 6208
+      },
+      "custo_usd": 0.0024061000000000004,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "**CRAC-04** é o que refrigera principalmente o rack F-01.\n\n- **Cadastro:** a zona de F-01 é CRAC-04.\n- **Posição:** F-01 fica em x = 0 m, y = 12 m. O CRAC-04 está em (1,9; 23,1), a cerca de 11,3 m. O CRAC-05 está a cerca de 12,5 m, e o CRAC-01, a cerca de 13,6 m.\n- **Telemetria:** a entrada do meio de F-01 tem correlação horária de 0,37 com o retorno do CRAC-04. Com o CRAC-05 a correlação é de 0,35, e com o CRAC-01 é de -0,10. Essa correlação com o CRAC-04 é fraca, mas é a mais alta das três.\n- **Operação:** no período de 2026-10-31 a 2026-11-30, a entrada de F-01 ficou dentro da faixa ASHRAE nas leituras que consultei. Na janela de 15/11 vista em detalhe, a entrada do meio ficou entre 21,4 e 22,2 °C e a saída chegou a 37,8 °C no máximo do período.\n\nRESPOSTA: CRAC-04"
+    },
+    {
+      "questao": "potencia_nominal",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "A-16",
+      "esperado": "A-16",
+      "segundos": 2.944880799999737,
+      "turnos": 2,
+      "ferramentas": 2,
+      "uso": {
+        "entrada": 6,
+        "saida": 430,
+        "cache_leitura": 8360,
+        "cache_escrita": 458
+      },
+      "custo_usd": 0.00035644999999999996,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "O rack com a maior potência nominal é o **A-16** (fileira A, posição 16), com 15,75 kW. Ele é do perfil denso, o mesmo perfil dos racks de GPU. Não há empate: o segundo maior valor é de outro rack denso, e a faixa dos racks denses vai de 12,33 a 15,75 kW.\n\nRESPOSTA: A-16"
+    },
+    {
+      "questao": "media_entrada",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "20.2",
+      "esperado": 20.21,
+      "segundos": 8.372652799999742,
+      "turnos": 3,
+      "ferramentas": 3,
+      "uso": {
+        "entrada": 8,
+        "saida": 1605,
+        "cache_leitura": 9170,
+        "cache_escrita": 5491
+      },
+      "custo_usd": 0.001581375,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "A temperatura média de entrada dos racks no período inteiro foi **20,2 °C**. Esse valor é o mesmo pela média direta das leituras e pela média ponderada dos agregados horários, e fica dentro da faixa ASHRAE de 18 a 27 °C.\n\n- **Base:** 600 sensores de entrada (200 racks × base, meio e topo), 25.919.760 leituras válidas e 240 nulos, de 31/10/2026 21:00 a 30/11/2026 21:00 (horário local).\n- **Extremos:** a faixa vai de −4,0 °C a 45,6 °C. Três sensores têm valores fora do comum, e são os mais prováveis de estarem com defeito, não os racks em si:\n  - G-07/entrada-topo: mínimo −4,0 °C e máximo 45,6 °C (média 20,4 °C).\n  - C-07/entrada-topo: mínimo −1,1 °C e máximo 44,6 °C (média 20,7 °C).\n  - E-15/entrada-base: máximo 45,3 °C (média 20,9 °C).\n\n  Não verifiquei esses picos um a um, então não sei quanto eles puxam a média. Se a equipe quiser a média sem esses sensores, posso recalcular.\n\nRESPOSTA: 20.2"
+    },
+    {
+      "questao": "potencia_total",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "1020",
+      "esperado": 1020.0,
+      "segundos": 4.069536799999696,
+      "turnos": 2,
+      "ferramentas": 1,
+      "uso": {
+        "entrada": 6,
+        "saida": 330,
+        "cache_leitura": 4181,
+        "cache_escrita": 4721
+      },
+      "custo_usd": 0.0007975349999999999,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "A potência média total do hall no período foi de **1.020 kW**.\n\nIsso bate com a média por rack: 5,1 kW em média por rack × 200 racks = 1.020 kW. A ferramenta usou os agregados horários para calcular o valor.\n\nRESPOSTA: 1020"
+    },
+    {
+      "questao": "sensores_sem_leitura",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "4",
+      "esperado": 4,
+      "segundos": 5.208850699999857,
+      "turnos": 3,
+      "ferramentas": 2,
+      "uso": {
+        "entrada": 8,
+        "saida": 759,
+        "cache_leitura": 8643,
+        "cache_escrita": 4921
+      },
+      "custo_usd": 0.001081855,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "Quatro sensores ficaram sem leitura em algum momento do período (de um total de 1.012 sensores). Todos são sensores de entrada de rack:\n\n- I-09/entrada-base: 77 leituras nulas, de 22/11 13:03 a 15:30\n- I-07/entrada-base: 73 leituras nulas, de 23/11 09:56 a 12:11\n- J-14/entrada-topo: 53 leituras nulas, de 18/11 19:44 a 21:26\n- B-01/entrada-topo: 37 leituras nulas, de 27/11 23:00 a 23:37\n\nOs horários são locais (America/Sao_Paulo). Não verifiquei se há intervalos sem linha na tabela, só valores nulos.\n\nRESPOSTA: 4"
+    },
+    {
+      "questao": "racks_quentes",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "A-08, A-09, A-10, A-11, A-12, A-13, B-09, B-10, B-11, B-12, B-13, C-09, C-10, C-11",
+      "esperado": [
+        "A-08",
+        "A-09",
+        "A-10",
+        "A-11",
+        "A-12",
+        "A-13",
+        "B-09",
+        "B-10",
+        "B-11",
+        "B-12",
+        "B-13",
+        "C-09",
+        "C-10",
+        "C-11"
+      ],
+      "segundos": 11.800733500000206,
+      "turnos": 3,
+      "ferramentas": 4,
+      "uso": {
+        "entrada": 8,
+        "saida": 2230,
+        "cache_leitura": 10158,
+        "cache_escrita": 28731
+      },
+      "custo_usd": 0.0048087550000000005,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "O evento real é a falha de refrigeração do CRAC-02, que afetou 14 racks das fileiras A, B e C. O G-07 também aparece fora da faixa, mas é defeito de sensor e fica de fora.\n\n**Evento CRAC-02**\n- O insuflamento do CRAC-02 saiu de cerca de 19,5 °C para 22,6 °C na média das 02:00 e chegou a 33,2 °C às 04:25 (setpoint ~19,5 °C).\n- O retorno subiu de cerca de 28,4 °C para 34,7 °C no mesmo período, e a zona ficou quente de forma gradual.\n- A recuperação começou por volta das 04:30 e o insuflamento voltou a ~19,5 °C às 04:50.\n- Os racks da zona passaram de 27 °C na entrada entre 02:11 e 04:32, com pico de 30,5 °C no A-11.\n\n**Racks afetados (entrada acima de 27 °C, pico em °C):**\n- A-08 (28,3), A-09 (29,3), A-10 (30,4), A-11 (30,5), A-12 (30,0), A-13 (28,1)\n- B-09 (27,6), B-10 (27,9), B-11 (28,2), B-12 (28,0), B-13 (27,2)\n- C-09 (27,2), C-10 (27,2), C-11 (27,2)\n\nOs racks C-09, C-10 e C-11 ficaram só marginalmente acima de 27 °C, com pico de 27,2 °C.\n\n**Descartado: G-07 (zona do CRAC-04)**\n- A entrada-topo tem picos e quedas isolados e absurdos, de -4 °C a 45,6 °C, sem eco na entrada-base ou na entrada-meio, que seguem em cerca de 19,7 °C e 20,3 °C.\n- A saída e a potência do G-07 seguem normais, sem sinal de sobrecarga.\n- Trata-se de defeito de sensor.\n\nRESPOSTA: A-08, A-09, A-10, A-11, A-12, A-13, B-09, B-10, B-11, B-12, B-13, C-09, C-10, C-11"
+    },
+    {
+      "questao": "primeira_vez",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "02:11",
+      "esperado": "02:11",
+      "segundos": 8.689818299999388,
+      "turnos": 3,
+      "ferramentas": 3,
+      "uso": {
+        "entrada": 8,
+        "saida": 1529,
+        "cache_leitura": 9554,
+        "cache_escrita": 10785
+      },
+      "custo_usd": 0.0022089650000000002,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "A primeira vez que a entrada de um rack passou de 27 °C, entre 01:00 e 06:00 de 07/11, foi às **02:11**, em A-10 e A-11 (sensor topo, 27,2 °C e 27,3 °C). Os dois racks são da fileira A, na zona do CRAC-02.\n\n- **Contexto:** o CRAC-02 subiu o insuflamento de 26,6 °C (02:07) para 30,8 °C (02:18), e a entrada dos racks vizinhos subiu junto. Isso aponta para falha ou perda de capacidade de refrigeração do CRAC-02, não para defeito de sensor.\n- **Desvio de A-10 e A-11:** a partir de 02:11, a entrada desses racks ficou acima de 27 °C e continuou subindo até 04:32. O pico foi de 30,4 °C em A-10 e 30,5 °C em A-11.\n- **G-07 descartado:** o rack aparece na lista com pico de 45,6 °C e mínimo de -4 °C, às 03:37. O sensor topo de G-07 tem picos isolados e leituras negativas, enquanto os sensores base e meio seguem normais. É defeito de sensor, então o horário de G-07 não conta, e de qualquer forma ele vem depois de 02:11.\n\nRESPOSTA: 02:11"
+    },
+    {
+      "questao": "diagnostico_rack_sobrecarregado",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "sobrecarga",
+      "esperado": "sobrecarga",
+      "segundos": 15.578141099999812,
+      "turnos": 4,
+      "ferramentas": 6,
+      "uso": {
+        "entrada": 10,
+        "saida": 3239,
+        "cache_leitura": 34204,
+        "cache_escrita": 19531
+      },
+      "custo_usd": 0.0044039149999999996,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "O F-15 estava em **sobrecarga** entre 03/11 às 13:59 e 19:38: consumo e temperatura de saída subiram juntos, enquanto a entrada ficou normal.\n\n- **Potência:** média de cerca de 10,5 kW na janela, com picos de 11,57 kW no dia. A potência nominal do rack é 7,37 kW, e a média diária típica do F-15 em outubro e novembro é de cerca de 5 a 6 kW.\n- **Saída:** média de 41,9 °C, contra cerca de 34 °C nos racks com carga parecida. O delta saída−entrada foi de 21,6 °C, o maior do hall. Os demais ficaram entre 13,7 e 14,3 °C.\n- **Entrada:** entre 19,6 e 21,6 °C, dentro da faixa ASHRAE (18–27 °C) em todos os sensores. Só o topo ficou um pouco acima da base, sem indício de recirculação.\n- **CRAC-06 (zona do rack):** insuflamento estável em cerca de 19,2 °C e retorno caindo de 34 °C para 32,6 °C. Não há sinal de falha de CRAC.\n- **Sensores:** saída e potência variam juntas ao longo da janela, sem valores travados, nulos ou picos isolados. Não parece defeito de sensor.\n\nEntre 19:00 e 19:30 a potência caiu para cerca de 9,3 kW e a saída para cerca de 39,4 °C, então a carga estava diminuindo ao fim da janela.\n\nRESPOSTA: sobrecarga"
+    },
+    {
+      "questao": "diagnostico_falha_crac",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "falha_crac",
+      "esperado": "falha_crac",
+      "segundos": 9.509412299999894,
+      "turnos": 3,
+      "ferramentas": 3,
+      "uso": {
+        "entrada": 8,
+        "saida": 2051,
+        "cache_leitura": 22446,
+        "cache_escrita": 19112
+      },
+      "custo_usd": 0.00363976,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "O CRAC-05 perdeu capacidade de refrigeração nessa janela. O insuflamento subiu de cerca de 20 °C para cerca de 33 °C e não voltou ao setpoint. Isso indica falha de CRAC, não defeito de sensor.\n\n- **Antes do evento:** entre 00:00 e 02:00 o insuflamento médio foi 19,67 °C, perto do setpoint de 19,5 °C.\n- **Início:** a partir de 02:01 o insuflamento subiu quase 1 °C por minuto: 20,9 °C às 02:01, 27,2 °C às 02:08 e 31,1 °C às 02:18.\n- **Estabilização:** a partir de cerca de 02:45 ficou em torno de 33 °C (mínimo 32,8 °C, máximo 33,5 °C) até 04:00, sem recuperação.\n- **Retorno:** subiu de 29,8 °C às 02:01 para 35–36 °C entre 02:30 e 04:00 (máximo 36,1 °C às 03:01).\n- **Racks da zona:** a entrada dos racks com zona CRAC-05 teve média de 25,9 °C e máximo de 30,7 °C na janela, acima da faixa ASHRAE de 27 °C em parte do período.\n\nOs dados mostram o comportamento do CRAC, mas não a causa (ventilador, compressor, etc.).\n\nRESPOSTA: falha_crac"
+    },
+    {
+      "questao": "diagnostico_sensor_picos",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "defeito_sensor",
+      "esperado": "defeito_sensor",
+      "segundos": 10.576121500000227,
+      "turnos": 2,
+      "ferramentas": 2,
+      "uso": {
+        "entrada": 6,
+        "saida": 2034,
+        "cache_leitura": 4250,
+        "cache_escrita": 26094
+      },
+      "custo_usd": 0.00432185,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "O sensor **G-07/entrada-topo** teve picos absurdos e isolados, com leituras negativas e de até 45,6 °C. O valor real da entrada ficou em torno de 20,7 °C. Trata-se de defeito de sensor, não de aquecimento do rack.\n\n**O que os dados mostram (07/11, 02:50 a 08:25):**\n- **Linha de base normal:** entre os picos, o topo ficou entre 20,4 e 21,1 °C, a mesma faixa de antes e depois da janela.\n- **Picos espúrios:** em cerca de 19 dos 68 intervalos de 5 minutos, uma ou mais leituras saíram do padrão. Exemplos: 03:35 (máx. 45,6 °C, mín. 20,8 °C), 03:40 (mín. −0,2 °C), 05:35 (mín. −4,0 °C), 06:00 (máx. 45,3 °C) e 07:45 (mín. 1,1 °C).\n- **Sem eco nos vizinhos:** no mesmo período, a entrada base (19,4 a 20,0 °C) e a entrada meio (20,0 a 20,7 °C) ficaram estáveis, sem nenhum pico correspondente.\n- **Aquecimento real não aparece:** se o rack estivesse esquentando, o topo subiria junto com o meio e a base. Como isso não acontece, o padrão não é recirculação.\n- **Saída e potência:** a saída subiu de cerca de 27,5 para 30,2 °C e a potência de 2,8 para 3,9 kW. Essa subida gradual acompanha a carga e não é o que causa os picos da entrada.\n\nOs picos do topo não refletem a temperatura real de entrada do rack. Vale verificar ou substituir esse sensor. Não respondi se o mesmo defeito ocorre fora desta janela.\n\nRESPOSTA: defeito_sensor"
+    },
+    {
+      "questao": "diagnostico_super_refrigeracao",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "super_refrigeracao",
+      "esperado": "super_refrigeracao",
+      "segundos": 13.796624200000224,
+      "turnos": 4,
+      "ferramentas": 5,
+      "uso": {
+        "entrada": 10,
+        "saida": 2610,
+        "cache_leitura": 26678,
+        "cache_escrita": 12528
+      },
+      "custo_usd": 0.00313878,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "O CRAC-05 ficou em **super-refrigeração** a partir de 09/11 por volta das 18:00. O insuflamento caiu de cerca de 19,7 °C para cerca de 14,9 °C e não voltou até o fim da janela, bem abaixo do setpoint de 19,5 °C.\n\n- **Antes:** entre 12:00 e 17:00 de 09/11, o insuflamento médio ficou em 19,66–19,67 °C, perto do setpoint.\n- **Mudança:** na hora das 18:00, a média foi 18,63 °C, e na hora das 19:00 chegou a 14,87 °C. A partir daí ficou em 14,8–14,9 °C, com máximo de 15,2 °C.\n- **Janela 09/11 18:42 a 11/11 19:24:** média do insuflamento de 14,89 °C, contra média de 19,03 °C no mês.\n- **Zona do CRAC-05:** os 30 racks têm temperatura média de entrada de 17,34 °C, abaixo da faixa ASHRAE (18 °C). A potência média desses racks foi de 5,34 kW, sem sinal de sobrecarga.\n- **Retorno:** acompanhou o ciclo diário, de 31,1 °C na média de 09/11 18:00 a 27,0 °C de madrugada. Isso indica que a queda foi do lado do CRAC e não de um sensor isolado.\n- **Outros CRACs:** os demais ficaram com insuflamento entre 19,2 e 19,7 °C no mesmo período. Só o CRAC-04 teve média de janela mais baixa (17,42 °C), e ele não é o foco da pergunta.\n\nComo o insuflamento mudou de forma coerente e o efeito apareceu em toda a zona, não parece defeito de sensor. A causa do setpoint efetivo ter caído não aparece nos dados; isso precisa ser verificado no próprio equipamento.\n\nRESPOSTA: super_refrigeracao"
+    },
+    {
+      "questao": "diagnostico_sensor_congelado",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "defeito_sensor",
+      "esperado": "defeito_sensor",
+      "segundos": 13.268515099999604,
+      "turnos": 4,
+      "ferramentas": 4,
+      "uso": {
+        "entrada": 10,
+        "saida": 2539,
+        "cache_leitura": 40227,
+        "cache_escrita": 19634
+      },
+      "custo_usd": 0.00412702,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "**Conclusão:** o sensor F-13/saida travou em 32,3 °C entre 12/11 às 17:32 e 14/11 às 08:23. Foi um defeito de leitura do sensor, não um evento térmico no rack.\n\n**Fatos que sustentam:**\n- **Valor travado:** nesse período o sensor repetiu 32,3 °C em todas as leituras, por 2.332 minutos (cerca de 39 horas). Mínimo e máximo são iguais. No dia 13/11 há um único valor distinto em 1.440 leituras, enquanto nos outros dias há 55 a 73 valores distintos.\n- **Sem eco físico no rack:** no mesmo período, os outros sensores de F-13 seguiram variando normalmente. A potência oscilou entre 2,8 e 6,3 kW, e a entrada-base ficou entre 18,6 e 19,9 °C. Com potência e temperatura de entrada mudando, a saída real também deveria mudar.\n- **Vizinhos normais:** F-12/saida e F-14/saida seguiram com variação diária normal, sem travamento, e não mostraram o mesmo padrão.\n- **Sem falha de CRAC nem sobrecarga:** a leitura travada não reflete a zona nem a potência do rack. Não há sinal de aquecimento progressivo.\n\n**Observação:** a entrada-topo de F-13 subiu cerca de 1 °C a partir de 13/11 às 03:00 (de ~20,2 para ~20,7 °C em média). Continua dentro da faixa ASHRAE e não tem relação com o travamento da saída.\n\n**Recomendação:** verificar ou substituir o sensor F-13/saida e, enquanto isso, não usar essa leitura para decisões de refrigeração.\n\nRESPOSTA: defeito_sensor"
+    },
+    {
+      "questao": "diagnostico_sensor_sem_leitura",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "defeito_sensor",
+      "esperado": "defeito_sensor",
+      "segundos": 13.711061299999528,
+      "turnos": 5,
+      "ferramentas": 6,
+      "uso": {
+        "entrada": 12,
+        "saida": 2739,
+        "cache_leitura": 40992,
+        "cache_escrita": 13925
+      },
+      "custo_usd": 0.003521245,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "O sensor J-14/entrada-topo teve falhas de leitura: metade das leituras entre 19:42 e 21:26 (horário local) veio vazia. Os valores que chegaram estavam normais, então o rack não esquentou. O caso é de defeito ou falha de comunicação do sensor.\n\n- **Janela (19:42 a 21:26, 104 minutos):** 52 leituras válidas e 52 nulas (50%). Havia uma leitura por minuto, e o padrão era de falhas alternadas, por exemplo nulos às 19:44, 19:47 e 19:49.\n- **Valores válidos:** entre 20,5 e 21,1 °C, média de 20,72 °C. Essa faixa está dentro da ASHRAE (18 a 27 °C) e é parecida com a de antes da janela, que ficou em torno de 20,6 a 20,9 °C.\n- **Racks vizinhos e o próprio J-14 não acompanharam:** no mesmo intervalo, os outros sensores do J-14 tiveram 104 leituras válidas cada um. A entrada base ficou entre 19,7 e 20,3 °C, a entrada meio entre 20,2 e 20,8 °C, a potência entre 3,01 e 3,61 kW e a saída entre 31,1 e 33,1 °C. Não há sinal de aquecimento no rack.\n- **Sem sinais de deriva ou valor travado:** os valores variaram normalmente e não houve picos absurdos.\n\nRecomendo verificar a conexão ou o próprio sensor J-14/entrada-topo. Até lá, a temperatura de entrada do topo do J-14 não pode ser monitorada nesse período.\n\nRESPOSTA: defeito_sensor"
+    },
+    {
+      "questao": "diagnostico_sensor_deriva",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "defeito_sensor",
+      "esperado": "defeito_sensor",
+      "segundos": 14.701060899999902,
+      "turnos": 4,
+      "ferramentas": 5,
+      "uso": {
+        "entrada": 10,
+        "saida": 2776,
+        "cache_leitura": 24848,
+        "cache_escrita": 12786
+      },
+      "custo_usd": 0.00323573,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "A leitura de E-15/entrada-base subiu de forma contínua e sem causa física, e às 11:14 de 30/11 caiu de repente para cerca de 19,7 °C. Isso aponta para **defeito de sensor (deriva)**, não para um problema térmico real no rack.\n\n**Fatos:**\n- **Deriva constante:** a média diária passou de 19,7 °C (26/11) para 20,6 (27/11), 27,9 (28/11), 36,7 (29/11) e 44–45 °C na manhã de 30/11. A subida foi de cerca de 0,6 °C por hora, sem pausas, e não houve nulos nem valores travados.\n- **Ele não se comportou como um rack aquecendo:** no mesmo período, os outros sensores de E-15 ficaram estáveis. Entrada meio ficou em ~20,1 °C, entrada topo em ~20,9 °C, a saída em ~30 °C (com média decrescente) e a potência em ~2,8–3,1 kW, sem sinal de sobrecarga.\n- **Sem eco nos vizinhos:** E-14 e E-16 (base) ficaram em ~19,5 e ~20,0 °C. O insuflamento do CRAC-03, zona de E-15, ficou em ~19,65 °C o tempo todo.\n- **Queda abrupta:** às 11:14 de 30/11 a leitura caiu de ~45 para ~19,5 °C e ficou nessa faixa até o fim dos dados, junto da entrada meio e topo. Uma queda brusca não é resfriamento real, que seria gradual, e a causa (reset, troca ou correção do sensor) não aparece nos dados.\n\nUm rack com entrada base a 45 °C e saída a ~30 °C seria incoerente com a saída real, que não passou de ~35 °C. Por isso, os valores de 27/11 a 30/11 devem ser tratados como não confiáveis. Vale verificar o sensor fisicamente e conferir se a leitura atual de ~19,7 °C está correta.\n\nRESPOSTA: defeito_sensor"
+    },
+    {
+      "questao": "controle_A-01",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "normal",
+      "esperado": "normal",
+      "segundos": 6.00604149999981,
+      "turnos": 2,
+      "ferramentas": 3,
+      "uso": {
+        "entrada": 6,
+        "saida": 1067,
+        "cache_leitura": 4243,
+        "cache_escrita": 14211
+      },
+      "custo_usd": 0.0023529049999999998,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "O A-01 operou normalmente entre 02/11 às 13:00 e 16:00 (horário local). Não houve nenhum evento nem leitura fora da faixa.\n\n- **Entrada (ASHRAE 18–27 °C):** base entre 21,2 e 21,8 °C, meio entre 21,2 e 21,9 °C, topo entre 21,8 e 22,5 °C. A ferramenta de faixa não encontrou nenhum minuto fora da faixa para o rack.\n- **Potência:** entre 3,99 e 4,65 kW, na faixa esperada para o rack (nominal de 5,02 kW, perfil padrão).\n- **Saída:** entre 33,2 e 35,5 °C, cerca de 13 °C acima da entrada, como esperado.\n- **Topo vs. base:** o topo ficou cerca de 0,6 °C acima da base, diferença pequena que não indica recirculação.\n- **Sensores:** os valores variam a cada leitura, sem trechos travados, picos absurdos nem falhas de leitura, então não há sinal de defeito de sensor.\n\nNão consultei o CRAC-01 (zona do rack) porque nenhum sinal no rack pedia confirmação.\n\nRESPOSTA: normal"
+    },
+    {
+      "questao": "controle_A-08",
+      "provedor": "claude",
+      "modelo": "claude-haiku-5-5",
+      "acertou": true,
+      "obtido": "normal",
+      "esperado": "normal",
+      "segundos": 8.999514799999815,
+      "turnos": 2,
+      "ferramentas": 2,
+      "uso": {
+        "entrada": 6,
+        "saida": 1698,
+        "cache_leitura": 4243,
+        "cache_escrita": 13932
+      },
+      "custo_usd": 0.00263353,
+      "parada": "fim",
+      "erro": null,
+      "resposta": "O A-08 não teve nenhum evento anormal entre 05/11 às 21:00 e 06/11 às 00:00. Todas as leituras de entrada ficaram dentro da faixa ASHRAE (18–27 °C), e a potência e a temperatura de saída caíram de forma gradual.\n\n- **Entrada:** a base ficou em torno de 19,9 °C, o meio em torno de 20,1 °C e o topo em torno de 21,0 °C. O topo ficou cerca de 1 °C acima da base, o que é um gradiente pequeno e esperado. Não há sinal de recirculação.\n- **Potência:** caiu de cerca de 4,85 kW (21:00) para cerca de 3,5 kW (23:55).\n- **Saída:** caiu de cerca de 33,2 °C (21:00) para cerca de 29,8 °C (23:55). A diferença entre saída e entrada ficou entre 10 e 13 °C, dentro do esperado.\n- **Sensores:** os valores variam a cada minuto e não há repetição travada, pico absurdo nem falta de leitura, então não há indício de defeito de sensor.\n- **Faixa ASHRAE:** a consulta de racks fora da faixa não retornou nenhuma ocorrência nessa janela.\n\nA redução de potência e de temperatura de saída sugere menor carga no rack, mas os dados não dizem a causa. Não investiguei o CRAC da zona nem os racks vizinhos.\n\nRESPOSTA: normal"
+    }
+  ]
+}
