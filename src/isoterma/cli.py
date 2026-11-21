@@ -464,6 +464,11 @@ def perguntar(
     typer.echo(typer.style(f"\n{_resumo_uso(resposta)}", dim=True))
 
 
+class VersaoAvaliacao(StrEnum):
+    V1 = "v1"
+    V2 = "v2"
+
+
 @app.command("avaliar-ia")
 def avaliar_ia(
     diretorio: DiretorioSimulacao,
@@ -477,6 +482,10 @@ def avaliar_ia(
         int | None,
         typer.Option(help="Roda só as N primeiras perguntas (para estimar o custo).", min=1),
     ] = None,
+    versao: Annotated[
+        VersaoAvaliacao,
+        typer.Option(help="Conjunto de perguntas: v2 (atual, mais difícil) ou v1 (o original)."),
+    ] = VersaoAvaliacao.V2,
     resultado: Annotated[
         Path | None,
         typer.Option(help="JSON de saída (padrão: <simulação>/avaliacao-ia.json)."),
@@ -490,9 +499,11 @@ def avaliar_ia(
         provedores = [criar_provedor(especificacao) for especificacao in llm]
     except ErroProvedor as erro:
         _falhar(erro)
-    questoes = gerar_questoes(diretorio)[:amostra]
-    typer.echo(f"{len(questoes)} perguntas × {len(provedores)} provedores\n")
-    medido = avaliar(diretorio, provedores, questoes=questoes, aviso=typer.echo)
+    questoes = gerar_questoes(diretorio, versao=versao.value)[:amostra]
+    typer.echo(f"{len(questoes)} perguntas ({versao.value}) × {len(provedores)} provedores\n")
+    medido = avaliar(
+        diretorio, provedores, versao=versao.value, questoes=questoes, aviso=typer.echo
+    )
     destino = resultado or diretorio / "avaliacao-ia.json"
     medido.salvar(destino)
 
@@ -514,14 +525,16 @@ def avaliar_ia(
 
 @app.command("relatorio-ia")
 def relatorio_ia(
-    resultado: Annotated[
-        Path, typer.Argument(help="JSON gerado por `isoterma avaliar-ia`.", exists=True)
+    resultados: Annotated[
+        list[Path],
+        typer.Argument(help="Um ou mais JSONs gerados por `isoterma avaliar-ia`.", exists=True),
     ],
     saida: Annotated[Path, typer.Option(help="Arquivo Markdown.")] = Path("docs/AVALIACAO_IA.md"),
 ) -> None:
-    """Gera o relatório em Markdown da avaliação da IA."""
+    """Gera o relatório em Markdown da avaliação da IA (a versão mais nova primeiro)."""
     from isoterma.ia.avaliacao import ResultadoAvaliacao, gerar_relatorio
 
     saida.parent.mkdir(parents=True, exist_ok=True)
-    saida.write_text(gerar_relatorio(ResultadoAvaliacao.carregar(resultado)), encoding="utf-8")
+    carregados = [ResultadoAvaliacao.carregar(r) for r in resultados]
+    saida.write_text(gerar_relatorio(carregados), encoding="utf-8")
     typer.echo(f"Relatório gravado em {saida}")

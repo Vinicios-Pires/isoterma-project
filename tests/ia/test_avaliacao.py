@@ -16,21 +16,63 @@ from isoterma.ia.avaliacao import (
 from isoterma.ia.provedores.falso import Historico, ProvedorFalso
 from isoterma.ia.tipos import Turno, Uso
 
+DESCOBERTA = Questao(
+    "d",
+    "descoberta",
+    "",
+    "",
+    "incidentes",
+    [
+        {"categoria": "falha_crac", "alvos": ["CRAC-02"]},
+        {"categoria": "defeito_sensor", "alvos": ["G-07/entrada-topo", "G-07"]},
+    ],
+    0.7,
+)
+
 
 @pytest.fixture(scope="module")
 def questoes(diretorio: Path) -> list[Questao]:
     return gerar_questoes(diretorio)
 
 
-def test_gera_perguntas_das_tres_categorias(questoes: list[Questao]) -> None:
+def test_v2_tem_as_quatro_categorias(questoes: list[Questao]) -> None:
     categorias = {q.categoria for q in questoes}
     por_id = {q.id: q for q in questoes}
 
-    assert categorias == {"fatos", "investigacao", "diagnostico"}
+    assert categorias == {"fatos", "investigacao", "diagnostico", "descoberta"}
     assert por_id["racks"].esperado == 10
     assert por_id["diagnostico_falha_crac"].esperado == "falha_crac"
     assert por_id["diagnostico_sensor_congelado"].esperado == "defeito_sensor"
-    assert any(q.esperado == "normal" for q in questoes)
+    assert sum(q.esperado == "normal" for q in questoes) == 3
+
+
+def test_v2_pergunta_sempre_pelo_rack_sem_entregar_a_causa(questoes: list[Questao]) -> None:
+    diagnosticos = [q for q in questoes if q.categoria == "diagnostico"]
+
+    assert all(q.pergunta.startswith("Houve algo anormal no rack ") for q in diagnosticos)
+    assert not any("sensor" in q.pergunta or "CRAC" in q.pergunta for q in diagnosticos)
+
+
+def test_v2_falha_de_crac_pergunta_pelo_rack_da_zona(questoes: list[Questao]) -> None:
+    falha = next(q for q in questoes if q.id == "diagnostico_falha_crac")
+
+    # A falha programada é do CRAC-01, que fica de frente para a fileira A.
+    assert "rack A-" in falha.pergunta
+
+
+def test_v2_descoberta_lista_os_incidentes_de_um_dia(questoes: list[Questao]) -> None:
+    descoberta = next(q for q in questoes if q.id == "descoberta")
+
+    assert descoberta.tipo == "incidentes"
+    assert 2 <= len(descoberta.esperado) <= 8
+    assert all({"categoria", "alvos"} == set(i) for i in descoberta.esperado)
+
+
+def test_v1_continua_disponivel(diretorio: Path) -> None:
+    v1 = gerar_questoes(diretorio, versao="v1")
+
+    assert {q.categoria for q in v1} == {"fatos", "investigacao", "diagnostico"}
+    assert any(q.pergunta.startswith("O que aconteceu com o sensor") for q in v1)
 
 
 def test_racks_quentes_vem_da_zona_do_crac_que_falhou(questoes: list[Questao]) -> None:
@@ -87,6 +129,16 @@ def test_extrair_resposta(texto: str, esperado: str | None) -> None:
         (Questao("h", "investigacao", "", "", "horario", "02:11", 3), "RESPOSTA: 02h13", True),
         (Questao("h", "investigacao", "", "", "horario", "02:11", 3), "RESPOSTA: 02:20", False),
         (Questao("x", "fatos", "", "", "numero", 1, 0), "Não sei.", False),
+        (DESCOBERTA, "RESPOSTA: falha_crac:CRAC-02; defeito_sensor:G-07", True),
+        (DESCOBERTA, "RESPOSTA: defeito sensor:G-07/entrada-topo; falha_crac:crac-02", True),
+        (DESCOBERTA, "RESPOSTA: falha_crac:CRAC-02", False),  # F1 0,67
+        (DESCOBERTA, "RESPOSTA: falha_crac:CRAC-01; defeito_sensor:G-07", False),
+        (DESCOBERTA, "RESPOSTA: nenhum", False),
+        (
+            Questao("d", "descoberta", "", "", "incidentes", [], 0.7),
+            "RESPOSTA: nenhum",
+            True,
+        ),
     ],
 )
 def test_corrigir(questao: Questao, resposta: str, acerta: bool) -> None:
@@ -100,7 +152,9 @@ def _oraculo(questoes: list[Questao], certo: bool) -> ProvedorFalso:
     def responder(historico: Historico) -> Turno:
         questao = por_pergunta[historico.perguntas[-1]]
         valor = questao.esperado
-        if isinstance(valor, list):
+        if questao.tipo == "incidentes":
+            valor = "; ".join(f"{i['categoria']}:{i['alvos'][0]}" for i in valor)
+        elif isinstance(valor, list):
             valor = ", ".join(valor)
         return Turno(
             f"Resposta.\nRESPOSTA: {valor if certo else 'nao sei'}", uso=Uso(entrada=10, saida=5)
@@ -128,6 +182,32 @@ def test_avaliacao_mede_acertos_e_gera_relatorio(
     relatorio = gerar_relatorio(carregado)
     assert f"**{len(questoes)}/{len(questoes)}**" in relatorio
     assert "não estimado" in relatorio  # o modelo "errado" não tem preço conhecido
+    assert "| Descoberta |" in relatorio
+
+
+def test_relatorio_mostra_as_duas_versoes_com_a_mais_nova_primeiro(diretorio: Path) -> None:
+    resultados = []
+    for versao in ("v1", "v2"):
+        questoes = gerar_questoes(diretorio, versao=versao)[:2]
+        resultados.append(
+            avaliar(diretorio, [_oraculo(questoes, True)], versao=versao, questoes=questoes)
+        )
+
+    relatorio = gerar_relatorio(resultados)
+
+    assert relatorio.index("## Versão 2") < relatorio.index("## Versão 1")
+    assert "mantida como registro" in relatorio
+
+
+def test_resultado_antigo_sem_versao_e_lido_como_v1(tmp_path: Path) -> None:
+    arquivo = tmp_path / "antigo.json"
+    arquivo.write_text(
+        '{"simulacao": "demo", "gerado_em": "2026-11-21T00:00:00+00:00", "isoterma": "0.1.0", '
+        '"questoes": [], "tentativas": []}',
+        encoding="utf-8",
+    )
+
+    assert ResultadoAvaliacao.carregar(arquivo).versao == "v1"
 
 
 def test_cli_perguntar_e_avaliar_com_o_provedor_falso(diretorio: Path, tmp_path: Path) -> None:
@@ -158,7 +238,7 @@ def test_cli_perguntar_e_avaliar_com_o_provedor_falso(diretorio: Path, tmp_path:
     assert "→ resumo()" in pergunta.output
     assert "provedor de demonstração" in pergunta.output
     assert avaliacao.exit_code == 0, avaliacao.output
-    assert "2 perguntas × 1 provedores" in avaliacao.output
+    assert "2 perguntas (v2) × 1 provedores" in avaliacao.output
     assert relatorio.exit_code == 0, relatorio.output
     assert (tmp_path / "A.md").exists()
 

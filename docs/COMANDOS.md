@@ -277,30 +277,34 @@ e o custo estimado.
 
 ### `avaliar-ia`
 
-Mede quanto cada modelo acerta. Gera perguntas com resposta conhecida a partir da simulação (17
-na demo: fatos, investigação e diagnóstico de incidentes), faz cada uma ao agente e corrige
-automaticamente. Registra acerto, tempo, tokens e custo de cada tentativa num JSON.
+Mede quanto cada modelo acerta. Gera perguntas com resposta conhecida a partir da simulação
+(19 na demo, na v2: fatos, investigação, diagnóstico de incidentes e uma pergunta de descoberta),
+faz cada uma ao agente e corrige automaticamente. Registra acerto, tempo, tokens e custo de cada
+tentativa num JSON.
 
 ```bash
 uv run isoterma avaliar-ia data/demo --llm claude --amostra 3     # 3 perguntas, para estimar o custo
 uv run isoterma avaliar-ia data/demo --llm claude
 uv run isoterma avaliar-ia data/demo --llm claude --llm gemini:<modelo> --resultado docs/avaliacao/demo.json
+uv run isoterma avaliar-ia data/demo --llm claude --versao v1     # o conjunto original
 ```
 
 | Opção | O que faz | Padrão |
 |---|---|---|
 | `--llm` | provedor a avaliar; repita para comparar vários | **obrigatória**, para não gastar sem querer |
 | `--amostra` | roda só as N primeiras perguntas | todas |
+| `--versao` | `v2` (atual, mais difícil) ou `v1` (o conjunto original, mantido como registro) | `v2` |
 | `--resultado` | onde gravar o JSON | `<simulação>/avaliacao-ia.json` |
 
 ### `relatorio-ia`
 
-Gera o relatório em Markdown de uma avaliação: acerto por provedor e por categoria, tempo
-médio, custo e o resultado de cada pergunta.
+Gera o relatório em Markdown de uma ou mais avaliações: acerto por provedor e por categoria,
+tempo médio, custo e o resultado de cada pergunta. Com vários JSONs, cada versão vira uma seção,
+a mais nova primeiro.
 
 ```bash
 uv run isoterma relatorio-ia data/demo/avaliacao-ia.json
-uv run isoterma relatorio-ia docs/avaliacao/demo.json --saida docs/AVALIACAO_IA.md
+uv run isoterma relatorio-ia docs/avaliacao/demo-v2.json docs/avaliacao/demo-v1.json
 ```
 
 | Opção | O que faz | Padrão |
