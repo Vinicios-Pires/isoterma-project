@@ -538,3 +538,62 @@ def relatorio_ia(
     carregados = [ResultadoAvaliacao.carregar(r) for r in resultados]
     saida.write_text(gerar_relatorio(carregados), encoding="utf-8")
     typer.echo(f"Relatório gravado em {saida}")
+
+
+# --- API ------------------------------------------------------------------------------------
+
+
+@app.command()
+def servir(
+    dados: Annotated[
+        Path, typer.Argument(help="Pasta com as simulações.", exists=True, file_okay=False)
+    ] = Path("data"),
+    host: Annotated[str, typer.Option(help="Endereço de escuta.")] = "127.0.0.1",
+    porta: Annotated[int, typer.Option(help="Porta HTTP.", min=1, max=65535)] = 8000,
+    llm: Annotated[
+        str | None,
+        typer.Option(
+            help="Provedor da IA (como no `perguntar`). Padrão: ISOTERMA_LLM; sem nenhum dos "
+            "dois, a IA fica desligada."
+        ),
+    ] = None,
+    perguntas_por_hora: Annotated[
+        int, typer.Option(help="Limite de perguntas à IA por IP, por hora.", min=1)
+    ] = 20,
+    teto_diario: Annotated[
+        float, typer.Option(help="Teto de gasto estimado da IA por dia, em dólares.", min=0)
+    ] = 1.0,
+    origem: Annotated[
+        list[str] | None,
+        typer.Option(help="Origem liberada no CORS (repita a opção). Padrão: o Vite local."),
+    ] = None,
+    atras_de_proxy: Annotated[
+        bool, typer.Option(help="Confia no X-Forwarded-For para identificar o IP do cliente.")
+    ] = False,
+) -> None:
+    """Sobe a API HTTP (documentação interativa em /docs)."""
+    import os
+
+    try:
+        import uvicorn
+
+        from isoterma.api import ConfigApi, criar_app
+    except ImportError as erro:
+        typer.echo("Instale o suporte à API: uv sync --extra api", err=True)
+        raise typer.Exit(1) from erro
+
+    provedor = llm or os.environ.get("ISOTERMA_LLM")
+    config = ConfigApi(
+        dados=dados,
+        llm=provedor,
+        perguntas_por_hora=perguntas_por_hora,
+        teto_diario_usd=teto_diario,
+        confiar_proxy=atras_de_proxy,
+        **({"origens_cors": tuple(origem)} if origem else {}),
+    )
+    aplicacao = criar_app(config)
+    simulacoes = aplicacao.state.catalogo.nomes()
+    typer.echo(f"Simulações: {', '.join(simulacoes) or 'nenhuma (rode `isoterma simular`)'}")
+    typer.echo(f"IA: {provedor or 'desligada (use --llm ou ISOTERMA_LLM)'}")
+    typer.echo(f"Documentação: http://{host}:{porta}/docs\n")
+    uvicorn.run(aplicacao, host=host, port=porta)

@@ -111,11 +111,22 @@ com laço próprio e independente de provedor. Adaptadores para Claude (padrão:
 O gabarito fica oculto da IA até para `read_parquet` direto. A avaliação de LLMs gera perguntas
 de fatos, investigação e diagnóstico a partir dos próprios dados. Detalhes em [IA.md](IA.md).
 
+**Avaliação real (21/11/2026):** com o Claude Haiku 5.5, a v1 deu 17/17 e foi considerada fácil
+demais (a pergunta entregava o alvo). A v2, com diagnóstico pelo rack e uma pergunta de
+descoberta, deu 18/19: o modelo deixou passar um sensor travado na descoberta. A rodada com o
+Sonnet 5.5 foi adiada para economizar.
+
+**API (21/11/2026):** decidido que a API serve tudo, rodando o mesmo motor da CLI, em vez do
+DuckDB-WASM no navegador: evita reescrever as consultas em TypeScript e reaproveita o SQL seguro.
+FastAPI com rotas tipadas (OpenAPI), `perguntar` em streaming (SSE), IA desligada por padrão,
+limite por IP e teto de gasto diário. Front decidido: React + Vite + TypeScript, Tailwind +
+shadcn/ui, D3 (isotermas) + Recharts, npm. Detalhes em [API.md](API.md).
+
 ### Decisões em aberto
 
-- Rodar a avaliação real (depende das chaves de API e do orçamento)
-- Fase 2, próximos passos: API (FastAPI), web (React) com o mapa de isotermas, detecção de
-  anomalias medida contra o gabarito e demo pública
+- Web: estrutura, Painel e Mapa de isotermas; depois detalhe de rack/CRAC e o chat
+- Detecção de anomalias medida contra o gabarito
+- Deploy da demo pública (Cloud Run + Cloudflare Pages)
 
 O projeto original da aula está preservado em [`legacy/`](../legacy/) como referência do
 ponto de partida.
