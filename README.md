@@ -43,7 +43,7 @@ Pergunta em PT-BR → LLM gera SQL → DuckDB sobre Parquet → resultado + anom
   - [x] [Motor de consultas](docs/MOTOR.md): camadas de agregados, consultas de domínio e SQL seguro
   - [x] [Benchmark](docs/BENCHMARK.md) com validação cruzada entre engines (Python, pandas, Polars, DuckDB)
 - **Fase 2: inteligência**
-  - [ ] Camada de IA com provedores plugáveis e benchmark de LLMs
+  - [x] [Camada de IA](docs/IA.md): agente com ferramentas, Claude, OpenAI e Gemini plugáveis, e avaliação de LLMs
   - [ ] Detecção de anomalias
   - [ ] API (FastAPI) e web (React + Vite + TypeScript) com o mapa térmico
   - [ ] Demo pública: DuckDB-WASM no navegador, Cloudflare Pages + R2, Cloud Run
@@ -65,6 +65,14 @@ uv run isoterma agregar data/demo       # camada de agregados por hora
 uv run isoterma resumo data/demo
 uv run isoterma mapa data/demo --instante 2026-11-07T04:15   # o CRAC-02 falhou às 2h
 uv run isoterma consultar data/demo "SELECT * FROM incidentes ORDER BY inicio"
+```
+
+Para fazer perguntas em português, instale o suporte a um provedor e configure a chave da API
+(cobrada à parte de qualquer assinatura). Sem chave, `--llm falso` mostra o fluxo:
+
+```bash
+uv sync --extra claude                  # ou --extra openai / --extra gemini
+uv run isoterma perguntar data/demo "o que aconteceu na fileira A no dia 7 de madrugada?"
 ```
 
 O simulador gera **1 bilhão de leituras em cerca de 20 s** num desktop de 6 núcleos
@@ -89,6 +97,7 @@ com memória, a tarefa realista e o método, está em [docs/BENCHMARK.md](docs/B
 ## Desenvolvimento
 
 ```bash
+uv sync --all-extras        # inclui os SDKs de Claude, OpenAI e Gemini, usados nos testes
 uv run pre-commit install   # roda lint, formatação e tipos antes de cada commit
 uv run pytest --cov         # testes com cobertura
 uv run ruff check           # lint
@@ -99,7 +108,7 @@ uv run pyright              # checagem de tipos
 ## Estrutura
 
 ```
-src/isoterma/   pacote principal: CLI, simulador, motor e, em breve, IA
+src/isoterma/   pacote principal: CLI, simulador, motor, benchmark e IA
 tests/          testes automatizados
 docs/           documentação, incluindo a evolução do projeto
 legacy/         o projeto original da aula, preservado intocado

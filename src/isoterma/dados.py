@@ -31,11 +31,15 @@ def ler_manifesto(diretorio: Path) -> dict[str, Any]:
     return json.loads(arquivo.read_text(encoding="utf-8"))
 
 
-def conectar(diretorio: Path, *, seguro: bool = False) -> duckdb.DuckDBPyConnection:
+def conectar(
+    diretorio: Path, *, seguro: bool = False, com_gabarito: bool = True
+) -> duckdb.DuckDBPyConnection:
     """Abre uma conexão em memória com uma view para cada tabela da simulação.
 
     Os horários são tratados em UTC. Com ``seguro=True``, a conexão só enxerga os arquivos
     desta simulação: outros arquivos, a rede e mudanças de configuração ficam bloqueados.
+    Com ``com_gabarito=False``, a tabela ``incidentes`` não existe e o arquivo dela fica
+    inacessível (em modo seguro, nem um ``read_parquet`` direto o alcança).
     """
     diretorio = diretorio.resolve()
     if not (diretorio / "leituras").is_dir():
@@ -53,7 +57,8 @@ def conectar(diretorio: Path, *, seguro: bool = False) -> duckdb.DuckDBPyConnect
         )
 
     view("leituras", diretorio / "leituras" / "*" / "*.parquet")
-    for tabela in TABELAS_DIMENSAO:
+    tabelas = [t for t in TABELAS_DIMENSAO if com_gabarito or t != "incidentes"]
+    for tabela in tabelas:
         view(tabela, diretorio / f"{tabela}.parquet")
     for granularidade in GRANULARIDADES:
         pasta = pasta_agregados(diretorio, granularidade)
@@ -61,7 +66,16 @@ def conectar(diretorio: Path, *, seguro: bool = False) -> duckdb.DuckDBPyConnect
             view(f"agregados_{granularidade}", pasta / "*" / "*.parquet")
 
     if seguro:
-        conexao.execute(f"SET allowed_directories = [{_literal(diretorio.as_posix() + '/')}]")
+        if com_gabarito:
+            pastas = [diretorio.as_posix() + "/"]
+            arquivos: list[str] = []
+        else:
+            # Libera só o que as views usam: a pasta da simulação inteira incluiria o gabarito.
+            pastas = [f"{diretorio.as_posix()}/{p}/" for p in ("leituras", "agregados")]
+            arquivos = [(diretorio / f"{t}.parquet").as_posix() for t in tabelas]
+        conexao.execute(f"SET allowed_directories = [{', '.join(map(_literal, pastas))}]")
+        if arquivos:
+            conexao.execute(f"SET allowed_paths = [{', '.join(map(_literal, arquivos))}]")
         conexao.execute("SET enable_external_access = false")
         conexao.execute("SET lock_configuration = true")
     return conexao

@@ -12,6 +12,7 @@ from isoterma.simulador.config import Preset
 from isoterma.terminal import numero, tamanho
 
 if TYPE_CHECKING:
+    from isoterma.ia.agente import Resposta
     from isoterma.motor import Hall
 
 app = typer.Typer(
@@ -381,4 +382,146 @@ def relatorio_benchmark(
     carregados.sort(key=lambda r: r.simulacao["leituras"])
     saida.parent.mkdir(parents=True, exist_ok=True)
     saida.write_text(gerar_markdown(carregados), encoding="utf-8")
+    typer.echo(f"Relatório gravado em {saida}")
+
+
+# --- IA -------------------------------------------------------------------------------------
+
+AJUDA_LLM = (
+    "Provedor e modelo: claude (Claude Haiku 5.5), claude:<modelo>, openai:<modelo>, "
+    "gemini:<modelo> ou falso (demonstração sem rede). Padrão: variável ISOTERMA_LLM ou claude."
+)
+
+
+def _resumo_uso(resposta: Resposta) -> str:
+    uso = resposta.uso
+    custo = (
+        f"US$ {numero(resposta.custo_usd, 4)}"
+        if resposta.custo_usd is not None
+        else "custo não estimado"
+    )
+    return (
+        f"{resposta.provedor} · {resposta.modelo} · {numero(resposta.segundos, 1)} s · "
+        f"{len(resposta.passos)} consultas · {numero(uso.entrada + uso.cache_leitura)} tokens de "
+        f"entrada ({numero(uso.cache_leitura)} do cache), {numero(uso.saida)} de saída · {custo}"
+    )
+
+
+@app.command()
+def perguntar(
+    diretorio: DiretorioSimulacao,
+    pergunta: Annotated[str, typer.Argument(help="A pergunta, em português.")],
+    llm: Annotated[str | None, typer.Option(help=AJUDA_LLM)] = None,
+    mostrar_sql: Annotated[bool, typer.Option(help="Mostra o SQL de cada consulta livre.")] = True,
+) -> None:
+    """Faz uma pergunta em linguagem natural; a IA consulta os dados e responde."""
+    from isoterma.ia.agente import Agente, Passo
+    from isoterma.ia.provedores import ErroProvedor, criar_provedor
+    from isoterma.ia.tipos import Parada
+    from isoterma.motor import Hall
+
+    try:
+        provedor = criar_provedor(llm)
+    except ErroProvedor as erro:
+        _falhar(erro)
+
+    def mostrar(passo: Passo) -> None:
+        argumentos = ", ".join(
+            f"{k}={v!r}"
+            for k, v in passo.chamada.argumentos.items()
+            if v is not None and k != "sql"
+        )
+        estado = "erro" if passo.resultado.erro else f"{passo.linhas} linhas"
+        typer.echo(
+            typer.style(
+                f"  → {passo.chamada.nome}({argumentos})  {numero(passo.segundos, 2)} s, {estado}",
+                dim=True,
+            )
+        )
+        if passo.sql and mostrar_sql:
+            for linha in passo.sql.strip().splitlines():
+                typer.echo(typer.style(f"      {linha}", dim=True))
+        if passo.resultado.erro:
+            typer.echo(typer.style(f"      {passo.resultado.conteudo}", fg="yellow"))
+
+    try:
+        with Hall(diretorio, ocultar_gabarito=True) as hall:
+            resposta = Agente(hall, provedor).perguntar(pergunta, ao_passo=mostrar)
+    except FileNotFoundError as erro:
+        _falhar(erro)
+    except ErroProvedor as erro:
+        _falhar(erro)
+
+    typer.echo("")
+    typer.echo(resposta.texto.strip() or "(sem texto na resposta)")
+    if resposta.parada is not Parada.FIM:
+        typer.echo(
+            typer.style(
+                f"\nA resposta ficou incompleta: {resposta.parada.value}. {resposta.detalhe}",
+                fg="yellow",
+            )
+        )
+    typer.echo(typer.style(f"\n{_resumo_uso(resposta)}", dim=True))
+
+
+@app.command("avaliar-ia")
+def avaliar_ia(
+    diretorio: DiretorioSimulacao,
+    llm: Annotated[
+        list[str],
+        typer.Option(
+            help="Provedores a avaliar (repita a opção). Sem padrão, para não gastar sem querer."
+        ),
+    ],
+    amostra: Annotated[
+        int | None,
+        typer.Option(help="Roda só as N primeiras perguntas (para estimar o custo).", min=1),
+    ] = None,
+    resultado: Annotated[
+        Path | None,
+        typer.Option(help="JSON de saída (padrão: <simulação>/avaliacao-ia.json)."),
+    ] = None,
+) -> None:
+    """Avalia provedores de LLM com perguntas de resposta conhecida. Chama as APIs: tem custo."""
+    from isoterma.ia.avaliacao import avaliar, gerar_questoes
+    from isoterma.ia.provedores import ErroProvedor, criar_provedor
+
+    try:
+        provedores = [criar_provedor(especificacao) for especificacao in llm]
+    except ErroProvedor as erro:
+        _falhar(erro)
+    questoes = gerar_questoes(diretorio)[:amostra]
+    typer.echo(f"{len(questoes)} perguntas × {len(provedores)} provedores\n")
+    medido = avaliar(diretorio, provedores, questoes=questoes, aviso=typer.echo)
+    destino = resultado or diretorio / "avaliacao-ia.json"
+    medido.salvar(destino)
+
+    typer.echo("")
+    for provedor in provedores:
+        do_provedor = [t for t in medido.tentativas if t.modelo == provedor.modelo]
+        custos = [t.custo_usd for t in do_provedor if t.custo_usd is not None]
+        custo = (
+            f"US$ {numero(sum(custos), 4)}"
+            if len(custos) == len(do_provedor)
+            else "custo não estimado"
+        )
+        acertos = sum(t.acertou for t in do_provedor)
+        typer.echo(
+            f"{provedor.nome}:{provedor.modelo}  {acertos}/{len(do_provedor)} acertos  {custo}"
+        )
+    typer.echo(f"\nResultado gravado em {destino}")
+
+
+@app.command("relatorio-ia")
+def relatorio_ia(
+    resultado: Annotated[
+        Path, typer.Argument(help="JSON gerado por `isoterma avaliar-ia`.", exists=True)
+    ],
+    saida: Annotated[Path, typer.Option(help="Arquivo Markdown.")] = Path("docs/AVALIACAO_IA.md"),
+) -> None:
+    """Gera o relatório em Markdown da avaliação da IA."""
+    from isoterma.ia.avaliacao import ResultadoAvaliacao, gerar_relatorio
+
+    saida.parent.mkdir(parents=True, exist_ok=True)
+    saida.write_text(gerar_relatorio(ResultadoAvaliacao.carregar(resultado)), encoding="utf-8")
     typer.echo(f"Relatório gravado em {saida}")
