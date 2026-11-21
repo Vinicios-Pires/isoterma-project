@@ -79,6 +79,9 @@ O simulador gera **1 bilhão de leituras em cerca de 20 s** num desktop de 6 nú
 (`--preset bilhao`). Os detalhes do modelo, dos incidentes e do esquema estão em
 [docs/SIMULADOR.md](docs/SIMULADOR.md).
 
+Todos os comandos, com exemplos e opções, estão em [docs/COMANDOS.md](docs/COMANDOS.md). A
+própria CLI também mostra a ajuda: `uv run isoterma --help` e `uv run isoterma <comando> --help`.
+
 ## Desempenho
 
 Sobre **1 bilhão de leituras**, num desktop com AMD Ryzen 5 5600 (6 núcleos) e 16 GB de RAM:
