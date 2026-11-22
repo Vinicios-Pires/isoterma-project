@@ -12,6 +12,11 @@ export function numero(valor: number | null | undefined, casas = 0): string {
   return formato.format(valor)
 }
 
+/** Até uma casa decimal, sem zeros sobrando: 2, 2,5, 18. Para eixos de gráfico. */
+export function numeroCurto(valor: number): string {
+  return new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 }).format(valor)
+}
+
 export const UNIDADES = { temp_entrada: '°C', temp_saida: '°C', potencia_kw: 'kW' } as const
 
 export function comUnidade(valor: number | null | undefined, unidade: string, casas = 1): string {

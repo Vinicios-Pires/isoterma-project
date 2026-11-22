@@ -22,12 +22,14 @@ export function PlantaTermica({
   tipo,
   selecionado,
   aoSelecionar,
+  aoSelecionarCrac,
 }: {
   planta: Planta
   racks: ValorRack[]
   tipo: TipoMapa
   selecionado?: string | null
   aoSelecionar?: (rackId: string) => void
+  aoSelecionarCrac?: (cracId: string) => void
 }) {
   const g = useMemo(() => geometria(planta), [planta])
   const escala = ESCALAS[tipo]
@@ -102,7 +104,12 @@ export function PlantaTermica({
 
         {g.cracs.map(({ id, x, y }) => {
           return (
-            <g key={id}>
+            <g
+              key={id}
+              className={aoSelecionarCrac ? 'cursor-pointer' : undefined}
+              onClick={() => aoSelecionarCrac?.(id)}
+              data-crac={id}
+            >
               <rect
                 x={x - g.texto * 2.1}
                 y={y - g.texto * 0.85}

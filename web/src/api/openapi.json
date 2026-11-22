@@ -73,6 +73,157 @@
         "title": "Estatistica",
         "type": "object"
       },
+      "EventoErro": {
+        "description": "Falha que impediu a resposta (evento ``erro``).",
+        "properties": {
+          "mensagem": {
+            "title": "Mensagem",
+            "type": "string"
+          }
+        },
+        "required": [
+          "mensagem"
+        ],
+        "title": "EventoErro",
+        "type": "object"
+      },
+      "EventoPasso": {
+        "description": "Uma ferramenta que o agente chamou (evento ``passo`` do streaming).",
+        "properties": {
+          "argumentos": {
+            "additionalProperties": true,
+            "title": "Argumentos",
+            "type": "object"
+          },
+          "erro": {
+            "title": "Erro",
+            "type": "boolean"
+          },
+          "ferramenta": {
+            "title": "Ferramenta",
+            "type": "string"
+          },
+          "linhas": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Linhas"
+          },
+          "mensagem_erro": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Mensagem Erro"
+          },
+          "segundos": {
+            "title": "Segundos",
+            "type": "number"
+          },
+          "sql": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sql"
+          }
+        },
+        "required": [
+          "ferramenta",
+          "argumentos",
+          "segundos",
+          "linhas",
+          "sql",
+          "erro"
+        ],
+        "title": "EventoPasso",
+        "type": "object"
+      },
+      "EventoResposta": {
+        "description": "A resposta final do agente (evento ``resposta``).",
+        "properties": {
+          "custo_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Custo Usd"
+          },
+          "detalhe": {
+            "title": "Detalhe",
+            "type": "string"
+          },
+          "modelo": {
+            "title": "Modelo",
+            "type": "string"
+          },
+          "parada": {
+            "title": "Parada",
+            "type": "string"
+          },
+          "provedor": {
+            "title": "Provedor",
+            "type": "string"
+          },
+          "segundos": {
+            "title": "Segundos",
+            "type": "number"
+          },
+          "texto": {
+            "title": "Texto",
+            "type": "string"
+          },
+          "tokens_cache": {
+            "title": "Tokens Cache",
+            "type": "integer"
+          },
+          "tokens_entrada": {
+            "title": "Tokens Entrada",
+            "type": "integer"
+          },
+          "tokens_saida": {
+            "title": "Tokens Saida",
+            "type": "integer"
+          },
+          "turnos": {
+            "title": "Turnos",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "texto",
+          "parada",
+          "detalhe",
+          "provedor",
+          "modelo",
+          "turnos",
+          "segundos",
+          "tokens_entrada",
+          "tokens_saida",
+          "tokens_cache",
+          "custo_usd"
+        ],
+        "title": "EventoResposta",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {

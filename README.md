@@ -47,7 +47,7 @@ Pergunta em PT-BR → LLM gera SQL → DuckDB sobre Parquet → resultado + anom
   - [ ] Detecção de anomalias
   - [x] [API](docs/API.md) (FastAPI): o motor e a IA por HTTP, com streaming das consultas do agente
   - [x] [Web](docs/WEB.md) (React + Vite + TypeScript): Painel e Mapa térmico com isotermas e controle de tempo
-  - [ ] Web: detalhe de rack e CRAC, e o chat com a IA
+  - [x] Web: séries de rack e CRAC (zoom por arraste, gabarito sobreposto) e o chat com a IA em streaming
   - [ ] Demo pública: DuckDB-WASM no navegador, Cloudflare Pages + R2, Cloud Run
 - **Fase 3: mundo real**
   - [ ] Clima externo real (Open-Meteo/INMET) como entrada do simulador

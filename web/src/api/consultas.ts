@@ -44,3 +44,16 @@ export function useForaDaFaixa(nome: string, janela: Janela = {}) {
 export function useGabarito(nome: string) {
   return useQuery({ queryKey: ['gabarito', nome], queryFn: () => api.gabarito(nome), staleTime: PARA_SEMPRE })
 }
+
+export function useSaude() {
+  return useQuery({ queryKey: ['saude'], queryFn: api.saude, staleTime: 60_000 })
+}
+
+export function useSerie(nome: string, alvo: string, janela: Janela = {}, pontos = 400) {
+  return useQuery({
+    queryKey: ['serie', nome, alvo, janela, pontos],
+    queryFn: () => api.serie(nome, alvo, janela, pontos),
+    staleTime: PARA_SEMPRE,
+    placeholderData: keepPreviousData,
+  })
+}

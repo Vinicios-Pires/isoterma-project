@@ -9,11 +9,14 @@ export function TabelaForaDaFaixa({
   simulacao,
   fuso,
   limite = 8,
+  janela,
 }: {
   racks: RackForaDaFaixa[]
   simulacao: string
   fuso: string
   limite?: number
+  /** Monta a janela de tempo do detalhe a partir de um instante. */
+  janela?: (instante: string) => URLSearchParams
 }) {
   if (racks.length === 0) {
     return <p className="text-sm text-muted-foreground">Nenhum rack saiu da faixa de 18 a 27 °C.</p>
@@ -33,7 +36,13 @@ export function TabelaForaDaFaixa({
         {racks.slice(0, limite).map((r) => (
           <TableRow key={r.rack_id}>
             <TableCell className="font-mono">
-              {r.rack_id} <span className="text-xs text-muted-foreground">{r.zona_crac}</span>
+              <Link
+                to={`/${simulacao}/rack/${r.rack_id}${r.primeira_vez && janela ? `?${janela(r.primeira_vez)}` : ''}`}
+                className="text-primary underline-offset-4 hover:underline"
+              >
+                {r.rack_id}
+              </Link>{' '}
+              <span className="text-xs text-muted-foreground">{r.zona_crac}</span>
             </TableCell>
             <TableCell className="tabular text-right">{r.minutos_acima ? duracao(r.minutos_acima) : '—'}</TableCell>
             <TableCell className="tabular text-right">{r.minutos_abaixo ? duracao(r.minutos_abaixo) : '—'}</TableCell>
