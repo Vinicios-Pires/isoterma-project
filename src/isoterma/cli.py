@@ -621,7 +621,8 @@ def relatorio_deteccao(
     from isoterma.anomalias.relatorio import carregar, gerar_relatorio
 
     saida.parent.mkdir(parents=True, exist_ok=True)
-    saida.write_text(gerar_relatorio([carregar(r) for r in resultados]), encoding="utf-8")
+    texto = gerar_relatorio([carregar(r) for r in resultados])
+    saida.write_text(texto, encoding="utf-8", newline="\n")
     typer.echo(f"Relatório gravado em {saida}")
 
 

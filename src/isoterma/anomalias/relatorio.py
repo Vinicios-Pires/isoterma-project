@@ -75,7 +75,8 @@ def avaliar_conjunto(
 
 def salvar(conjunto: dict[str, Any], destino: Path) -> None:
     destino.parent.mkdir(parents=True, exist_ok=True)
-    destino.write_text(json.dumps(conjunto, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    texto = json.dumps(conjunto, ensure_ascii=False, indent=2) + "\n"
+    destino.write_text(texto, encoding="utf-8", newline="\n")
 
 
 def carregar(arquivo: Path) -> dict[str, Any]:
