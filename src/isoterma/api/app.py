@@ -18,6 +18,7 @@ from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.sse import EventSourceResponse, ServerSentEvent
 
@@ -315,4 +316,24 @@ def criar_app(
             yield evento
 
     app.include_router(api)
+
+    def esquema_openapi() -> dict[str, Any]:
+        """O OpenAPI padrão mais os modelos dos eventos do streaming.
+
+        A rota ``perguntar`` devolve um fluxo SSE, e não JSON, então o FastAPI não publica os
+        modelos dos eventos. Eles entram aqui para o front gerar os tipos a partir do esquema.
+        """
+        if app.openapi_schema is None:
+            esquema = get_openapi(
+                title=app.title, version=app.version, description=app.description, routes=app.routes
+            )
+            componentes = esquema.setdefault("components", {}).setdefault("schemas", {})
+            for modelo in (e.EventoPasso, e.EventoResposta, e.EventoErro):
+                componentes[modelo.__name__] = modelo.model_json_schema(
+                    ref_template="#/components/schemas/{model}"
+                )
+            app.openapi_schema = esquema
+        return app.openapi_schema
+
+    app.openapi = esquema_openapi  # type: ignore[method-assign]
     return app

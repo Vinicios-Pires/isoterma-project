@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useSimulacao } from '@/hooks/useSimulacao'
 import { comUnidade, dataHoraCompleta, nomeFuso, numero } from '@/lib/formato'
+import { janelaEmVolta } from '@/lib/janela'
 
 const NOMES_SENSOR: Record<string, string> = {
   temp_entrada: 'Entrada dos racks',
@@ -97,7 +98,14 @@ function Conteudos({ simulacao }: { simulacao: Simulacao }) {
           </CardHeader>
           <CardContent>
             <Conteudo consulta={fora}>
-              {(racks) => <TabelaForaDaFaixa racks={racks} simulacao={simulacao.nome} fuso={fuso} />}
+              {(racks) => (
+                <TabelaForaDaFaixa
+                  racks={racks}
+                  simulacao={simulacao.nome}
+                  fuso={fuso}
+                  janela={(instante) => janelaEmVolta(instante, simulacao)}
+                />
+              )}
             </Conteudo>
           </CardContent>
         </Card>

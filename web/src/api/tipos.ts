@@ -18,3 +18,13 @@ export type Incidente = Esquemas['Incidente']
 
 export type TipoMapa = MapaTermico['tipo']
 export type Altura = NonNullable<MapaTermico['altura']>
+export type Saude = Esquemas['Saude']
+export type EventoPasso = Esquemas['EventoPasso']
+export type EventoResposta = Esquemas['EventoResposta']
+export type EventoErro = Esquemas['EventoErro']
+
+/** Um evento do streaming do ``perguntar``. */
+export type EventoPergunta =
+  | { tipo: 'passo'; dados: EventoPasso }
+  | { tipo: 'resposta'; dados: EventoResposta }
+  | { tipo: 'erro'; dados: EventoErro }

@@ -1,11 +1,15 @@
 // Cliente da API. Em desenvolvimento, o Vite encaminha /api para o `isoterma servir` local.
+import { lerEventos } from '@/lib/sse'
+
 import type {
   Altura,
+  EventoPergunta,
   Incidente,
   MapaTermico,
   Planta,
   RackForaDaFaixa,
   Resumo,
+  Saude,
   Serie,
   Simulacao,
   TipoMapa,
@@ -36,12 +40,44 @@ export async function buscar<T>(caminho: string, parametros: Parametros = {}): P
   } catch {
     throw new ErroApi(0, 'Sem conexão com a API. Ela está rodando (`isoterma servir`)?')
   }
-  if (!resposta.ok) {
-    const corpo = (await resposta.json().catch(() => null)) as { detail?: unknown } | null
-    const detalhe = typeof corpo?.detail === 'string' ? corpo.detail : `Erro ${resposta.status} na API`
-    throw new ErroApi(resposta.status, detalhe)
-  }
+  if (!resposta.ok) throw await erroDaResposta(resposta)
   return (await resposta.json()) as T
+}
+
+async function erroDaResposta(resposta: Response): Promise<ErroApi> {
+  const corpo = (await resposta.json().catch(() => null)) as { detail?: unknown } | null
+  const detalhe = typeof corpo?.detail === 'string' ? corpo.detail : `Erro ${resposta.status} na API`
+  return new ErroApi(resposta.status, detalhe)
+}
+
+/**
+ * Faz uma pergunta à IA e devolve os eventos do streaming à medida que chegam: cada consulta
+ * do agente (``passo``) e, no fim, a ``resposta`` ou um ``erro``.
+ */
+export async function* perguntar(
+  nome: string,
+  pergunta: string,
+  sinal?: AbortSignal,
+): AsyncGenerator<EventoPergunta> {
+  let resposta: Response
+  try {
+    resposta = await fetch(`${BASE}/api/${encodeURIComponent(nome)}/perguntar`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pergunta }),
+      signal: sinal,
+    })
+  } catch (erro) {
+    if (sinal?.aborted) throw erro
+    throw new ErroApi(0, 'Sem conexão com a API. Ela está rodando (`isoterma servir`)?')
+  }
+  if (!resposta.ok) throw await erroDaResposta(resposta)
+  if (!resposta.body) throw new ErroApi(resposta.status, 'A API respondeu sem corpo')
+  for await (const { evento, dados } of lerEventos(resposta.body)) {
+    if (evento === 'passo' || evento === 'resposta' || evento === 'erro') {
+      yield { tipo: evento, dados: JSON.parse(dados) } as EventoPergunta
+    }
+  }
 }
 
 export interface Janela {
@@ -52,6 +88,7 @@ export interface Janela {
 const sim = (nome: string) => `/${encodeURIComponent(nome)}`
 
 export const api = {
+  saude: () => buscar<Saude>('/saude'),
   simulacoes: () => buscar<Simulacao[]>('/simulacoes'),
   planta: (nome: string) => buscar<Planta>(`${sim(nome)}/planta`),
   resumo: (nome: string, janela: Janela = {}) =>

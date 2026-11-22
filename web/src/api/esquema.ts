@@ -187,6 +187,67 @@ export interface components {
             /** Minimo */
             minimo: number | null;
         };
+        /**
+         * EventoErro
+         * @description Falha que impediu a resposta (evento ``erro``).
+         */
+        EventoErro: {
+            /** Mensagem */
+            mensagem: string;
+        };
+        /**
+         * EventoPasso
+         * @description Uma ferramenta que o agente chamou (evento ``passo`` do streaming).
+         */
+        EventoPasso: {
+            /** Argumentos */
+            argumentos: {
+                [key: string]: unknown;
+            };
+            /** Erro */
+            erro: boolean;
+            /** Ferramenta */
+            ferramenta: string;
+            /** Linhas */
+            linhas: number | null;
+            /**
+             * Mensagem Erro
+             * @default null
+             */
+            mensagem_erro: string | null;
+            /** Segundos */
+            segundos: number;
+            /** Sql */
+            sql: string | null;
+        };
+        /**
+         * EventoResposta
+         * @description A resposta final do agente (evento ``resposta``).
+         */
+        EventoResposta: {
+            /** Custo Usd */
+            custo_usd: number | null;
+            /** Detalhe */
+            detalhe: string;
+            /** Modelo */
+            modelo: string;
+            /** Parada */
+            parada: string;
+            /** Provedor */
+            provedor: string;
+            /** Segundos */
+            segundos: number;
+            /** Texto */
+            texto: string;
+            /** Tokens Cache */
+            tokens_cache: number;
+            /** Tokens Entrada */
+            tokens_entrada: number;
+            /** Tokens Saida */
+            tokens_saida: number;
+            /** Turnos */
+            turnos: number;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */

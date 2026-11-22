@@ -65,6 +65,9 @@ atingido ou simulação inexistente, voltam como resposta HTTP comum, sem abrir 
 Como é um `POST`, no navegador o streaming é lido com `fetch` e um leitor do corpo, e não com
 `EventSource`, que só faz `GET`.
 
+Os modelos dos três eventos (`EventoPasso`, `EventoResposta`, `EventoErro`) entram no OpenAPI
+em `components.schemas`, mesmo sem a rota devolver JSON, para o front gerar os tipos deles.
+
 Para testar no terminal, use um arquivo com o corpo em UTF-8. No Windows, o curl repassa o texto
 digitado no comando com outro encoding, e uma pergunta com acento chega corrompida (`There was
 an error parsing the body`):

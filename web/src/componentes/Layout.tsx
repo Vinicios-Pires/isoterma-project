@@ -22,6 +22,7 @@ function Navegacao({ simulacao }: { simulacao: string }) {
   const itens = [
     { para: `/${simulacao}`, rotulo: 'Painel', fim: true },
     { para: `/${simulacao}/mapa`, rotulo: 'Mapa térmico', fim: false },
+    { para: `/${simulacao}/perguntar`, rotulo: 'Perguntar', fim: false },
   ]
   return (
     <nav className="flex items-center gap-1" aria-label="Seções">

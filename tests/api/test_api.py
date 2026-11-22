@@ -130,10 +130,13 @@ def test_cors_libera_o_vite_local(cliente: TestClient) -> None:
 
 
 def test_openapi_documenta_as_rotas(cliente: TestClient) -> None:
-    rotas = cliente.get("/openapi.json").json()["paths"]
+    esquema = cliente.get("/openapi.json").json()
+    rotas, modelos = esquema["paths"], esquema["components"]["schemas"]
 
     assert "/api/{simulacao}/perguntar" in rotas
     assert "/api/{simulacao}/mapa" in rotas
+    # Os eventos do streaming entram no esquema para o front gerar os tipos deles.
+    assert {"EventoPasso", "EventoResposta", "EventoErro"} <= set(modelos)
 
 
 # --- IA -------------------------------------------------------------------------------------

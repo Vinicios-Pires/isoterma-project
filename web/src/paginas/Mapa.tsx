@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router'
+import { Link, useNavigate, useSearchParams } from 'react-router'
 
 import { useMapa, usePlanta } from '@/api/consultas'
 import type { Altura, Simulacao, TipoMapa, ValorRack } from '@/api/tipos'
@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useSimulacao } from '@/hooks/useSimulacao'
 import { comUnidade, dataHora } from '@/lib/formato'
+import { janelaEmVolta } from '@/lib/janela'
 import { ESCALAS, NOMES_TIPO } from '@/lib/termica'
 
 const TIPOS: TipoMapa[] = ['temp_entrada', 'temp_saida', 'potencia_kw']
@@ -75,7 +76,17 @@ function Resumo({ racks, tipo }: { racks: ValorRack[]; tipo: TipoMapa }) {
   )
 }
 
-function DetalheRack({ rack, tipo }: { rack: ValorRack | undefined; tipo: TipoMapa }) {
+function DetalheRack({
+  rack,
+  tipo,
+  simulacao,
+  instante,
+}: {
+  rack: ValorRack | undefined
+  tipo: TipoMapa
+  simulacao: Simulacao
+  instante: string
+}) {
   if (!rack) {
     return <p className="text-sm text-muted-foreground">Clique num rack para ver os detalhes.</p>
   }
@@ -99,6 +110,12 @@ function DetalheRack({ rack, tipo }: { rack: ValorRack | undefined; tipo: TipoMa
         <dt className="text-xs text-muted-foreground">Zona</dt>
         <dd className="font-mono">{rack.zona_crac}</dd>
       </div>
+      <Link
+        to={`/${simulacao.nome}/rack/${rack.rack_id}?${janelaEmVolta(instante, simulacao)}`}
+        className="col-span-2 text-sm text-primary underline-offset-4 hover:underline"
+      >
+        Ver as séries de {rack.rack_id} →
+      </Link>
     </dl>
   )
 }
@@ -106,6 +123,7 @@ function DetalheRack({ rack, tipo }: { rack: ValorRack | undefined; tipo: TipoMa
 function MapaDaSimulacao({ simulacao }: { simulacao: Simulacao }) {
   const [parametros, setParametros] = useSearchParams()
   const [tocando, setTocando] = useState(false)
+  const navegar = useNavigate()
   const tipo: TipoMapa = ehTipo(parametros.get('tipo')) ? (parametros.get('tipo') as TipoMapa) : 'temp_entrada'
   const altura = (parametros.get('altura') as Altura | null) ?? null
   const instante = parametros.get('t') ?? simulacao.fim
@@ -203,6 +221,7 @@ function MapaDaSimulacao({ simulacao }: { simulacao: Simulacao }) {
                 tipo={tipo}
                 selecionado={rackSelecionado}
                 aoSelecionar={(rack) => alterar({ rack: rack === rackSelecionado ? null : rack })}
+                aoSelecionarCrac={(crac) => navegar(`/${simulacao.nome}/crac/${crac}?${janelaEmVolta(instante, simulacao)}`)}
               />
             ) : (
               <Carregando className="aspect-[2/3] h-auto max-h-[70vh]" />
@@ -222,10 +241,10 @@ function MapaDaSimulacao({ simulacao }: { simulacao: Simulacao }) {
           <Card>
             <CardHeader>
               <CardTitle>Rack</CardTitle>
-              <CardDescription>Clique de novo para desmarcar.</CardDescription>
+              <CardDescription>Clique num CRAC para ver as séries dele.</CardDescription>
             </CardHeader>
             <CardContent>
-              <DetalheRack rack={selecionado} tipo={tipo} />
+              <DetalheRack rack={selecionado} tipo={tipo} simulacao={simulacao} instante={instante} />
             </CardContent>
           </Card>
         </div>

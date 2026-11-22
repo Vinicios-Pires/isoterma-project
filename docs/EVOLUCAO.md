@@ -128,9 +128,16 @@ térmico com isotermas interpoladas, hall girado quando mais fundo que largo, co
 com play e estado na URL. Tipos gerados do OpenAPI, com teste que falha se divergirem. Visual de
 console de operação, temas claro e escuro. Detalhes em [WEB.md](WEB.md).
 
+**Web, parte 2 (22/11/2026):** páginas de rack e CRAC com séries (Recharts, um gráfico por
+unidade, zoom por arraste, gabarito sobreposto, visão em tabela, paleta validada para
+daltonismo) e o chat com a IA em streaming, mostrando cada consulta ao vivo. Testado com o Claude
+Haiku 5.5: a pergunta "algum CRAC teve problema?" encontrou as duas falhas e as três
+super-refrigerações do gabarito, por US$ 0,006.
+
 ### Decisões em aberto
 
-- Web, parte 2: detalhe de rack e CRAC (séries com Recharts) e o chat com a IA
+- Detecção de anomalias medida contra o gabarito
+- Deploy da demo pública (Cloud Run + Cloudflare Pages)
 - Detecção de anomalias medida contra o gabarito
 - Deploy da demo pública (Cloud Run + Cloudflare Pages)
 
