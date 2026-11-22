@@ -1,0 +1,28 @@
+# Cenário de estresse para a detecção de anomalias: o hall da demo, com cerca de 5 vezes mais
+# incidentes. Eles se sobrepõem com frequência (um sensor com defeito numa zona cujo CRAC
+# falhou, dois racks sobrecarregados juntos), o que a demo quase nunca produz.
+#
+#   uv run isoterma simular --config cenarios/estresse.toml --seed 201
+nome = "estresse"
+seed = 201
+
+[hall]
+fileiras = 10
+racks_por_fileira = 20
+cracs = 6
+
+[periodo]
+inicio = 2026-11-01T00:00:00Z
+dias = 14
+intervalo_s = 60
+fuso = "America/Sao_Paulo"
+
+[incidentes.taxas_por_dia]
+falha_crac = 0.5
+super_refrigeracao = 0.25
+rack_sobrecarregado = 1.5
+recirculacao = 0.5
+sensor_congelado = 0.5
+sensor_deriva = 0.5
+sensor_picos = 0.5
+sensor_sem_leitura = 0.5

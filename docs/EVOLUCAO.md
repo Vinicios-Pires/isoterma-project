@@ -134,11 +134,17 @@ daltonismo) e o chat com a IA em streaming, mostrando cada consulta ao vivo. Tes
 Haiku 5.5: a pergunta "algum CRAC teve problema?" encontrou as duas falhas e as três
 super-refrigerações do gabarito, por US$ 0,006.
 
+**Detecção de anomalias (22/11/2026):** 8 detectores explicáveis em SQL, que separam evento
+físico de defeito de sensor pela coerência entre sensores vizinhos. Medidos contra o gabarito
+com calibração, validação e um conjunto de teste rodado uma única vez: recall de 100% e
+precisão de 96,7% em 346 incidentes, inclusive num hall de geometria que os detectores nunca
+viram. A validação achou quatro defeitos, todos corrigidos antes do teste, e o teste deixou um
+documentado (deriva muito longa entortando a reta da saída). Detalhes em
+[ANOMALIAS.md](ANOMALIAS.md) e [DETECCAO.md](DETECCAO.md).
+
 ### Decisões em aberto
 
-- Detecção de anomalias medida contra o gabarito
-- Deploy da demo pública (Cloud Run + Cloudflare Pages)
-- Detecção de anomalias medida contra o gabarito
+- Anomalias na API e na web (página com os alertas e o placar)
 - Deploy da demo pública (Cloud Run + Cloudflare Pages)
 
 O projeto original da aula está preservado em [`legacy/`](../legacy/) como referência do

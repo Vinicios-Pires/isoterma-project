@@ -34,6 +34,9 @@ Guia de todos os comandos da linha de comando, na ordem em que costumam ser usad
 | [`perguntar`](#perguntar) | pergunta em português, respondida pela IA | **sim**, com provedor real |
 | [`avaliar-ia`](#avaliar-ia) | mede quanto cada modelo de IA acerta | **sim**, com provedor real |
 | [`relatorio-ia`](#relatorio-ia) | gera o `docs/AVALIACAO_IA.md` | não |
+| [`detectar`](#detectar) | procura anomalias, explicando cada alerta | não |
+| [`avaliar-deteccao`](#avaliar-deteccao) | mede os detectores contra o gabarito | não |
+| [`relatorio-deteccao`](#relatorio-deteccao) | gera o `docs/DETECCAO.md` | não |
 | [`servir`](#servir) | sobe a API HTTP para a web | só se a IA estiver ligada |
 
 Um roteiro completo, do zero até a primeira pergunta:
@@ -311,6 +314,58 @@ uv run isoterma relatorio-ia docs/avaliacao/demo-v2.json docs/avaliacao/demo-v1.
 | Opção | O que faz | Padrão |
 |---|---|---|
 | `--saida` | arquivo Markdown de saída | `docs/AVALIACAO_IA.md` |
+
+---
+
+## Anomalias
+
+Os detectores são regras explicáveis, sem IA e sem custo. O método está em
+[ANOMALIAS.md](ANOMALIAS.md) e os resultados em [DETECCAO.md](DETECCAO.md).
+
+### `detectar`
+
+Procura os 8 tipos de anomalia (falhas e super-refrigeração de CRAC, rack sobrecarregado,
+recirculação e quatro defeitos de sensor) e mostra cada alerta com o período, no fuso da
+simulação, e a evidência. Não lê o gabarito: funciona igual numa pasta sem `incidentes.parquet`.
+
+```bash
+uv run isoterma detectar data/demo
+uv run isoterma detectar data/demo --tipo falha_crac --tipo recirculacao
+uv run isoterma detectar data/demo --json alertas.json
+```
+
+| Opção | O que faz | Padrão |
+|---|---|---|
+| `--tipo` | mostra só esses tipos; repita para vários | todos |
+| `--json` | grava também as detecções, os limiares e o tempo de cada etapa em JSON | não grava |
+
+### `avaliar-deteccao`
+
+Roda os detectores em várias simulações e compara com o gabarito de cada uma: precisão, recall,
+F1 e atraso por tipo, mais a lista de incidentes perdidos e de alertas falsos.
+
+```bash
+uv run isoterma avaliar-deteccao data/teste-demo-* data/teste-estresse-* --grupo teste
+uv run isoterma avaliar-deteccao data/calib-* --grupo calibracao --resultado calib.json
+```
+
+| Opção | O que faz | Padrão |
+|---|---|---|
+| `--grupo` | nome do conjunto: `calibracao`, `validacao` ou `teste` | `teste` |
+| `--resultado` | onde gravar o JSON | `docs/deteccao/<grupo>.json` |
+
+### `relatorio-deteccao`
+
+Gera o relatório em Markdown a partir dos JSONs do `avaliar-deteccao`, com uma seção por
+conjunto.
+
+```bash
+uv run isoterma relatorio-deteccao docs/deteccao/*.json
+```
+
+| Opção | O que faz | Padrão |
+|---|---|---|
+| `--saida` | arquivo Markdown de saída | `docs/DETECCAO.md` |
 
 ---
 

@@ -1,0 +1,736 @@
+{
+  "grupo": "calibracao",
+  "isoterma": "0.1.0",
+  "gerado_em": "2026-11-22T22:49:50+00:00",
+  "maquina": {
+    "sistema": "Windows",
+    "processador": "AMD64 Family 25 Model 33 Stepping 2, AuthenticAMD"
+  },
+  "limiares": {
+    "sem_leitura_fracao": 0.3,
+    "congelado_min": 30,
+    "pico_c": 5.0,
+    "deriva_c": 1.0,
+    "deriva_min": 60,
+    "deriva_cobertura": 0.6,
+    "recirculacao_c": 1.5,
+    "recirculacao_min": 30,
+    "sobrecarga_razao": 1.3,
+    "sobrecarga_min": 15,
+    "crac_c": 2.0,
+    "zona_c": 0.8,
+    "falha_min": 10,
+    "super_refrigeracao_min": 60
+  },
+  "total": {
+    "incidentes": 224,
+    "invisiveis": 2,
+    "detectados": 224,
+    "deteccoes": 230,
+    "corretas": 230,
+    "precisao": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "atraso_mediano_min": 0.0
+  },
+  "por_tipo": {
+    "falha_crac": {
+      "incidentes": 32,
+      "invisiveis": 0,
+      "detectados": 32,
+      "deteccoes": 32,
+      "corretas": 32,
+      "precisao": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "atraso_mediano_min": 0.0
+    },
+    "super_refrigeracao": {
+      "incidentes": 8,
+      "invisiveis": 0,
+      "detectados": 8,
+      "deteccoes": 8,
+      "corretas": 8,
+      "precisao": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "atraso_mediano_min": 4.5
+    },
+    "rack_sobrecarregado": {
+      "incidentes": 59,
+      "invisiveis": 0,
+      "detectados": 59,
+      "deteccoes": 59,
+      "corretas": 59,
+      "precisao": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "atraso_mediano_min": 0.0
+    },
+    "recirculacao": {
+      "incidentes": 24,
+      "invisiveis": 0,
+      "detectados": 24,
+      "deteccoes": 24,
+      "corretas": 24,
+      "precisao": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "atraso_mediano_min": 0.0
+    },
+    "sensor_congelado": {
+      "incidentes": 24,
+      "invisiveis": 0,
+      "detectados": 24,
+      "deteccoes": 24,
+      "corretas": 24,
+      "precisao": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "atraso_mediano_min": 0.2
+    },
+    "sensor_deriva": {
+      "incidentes": 15,
+      "invisiveis": 0,
+      "detectados": 15,
+      "deteccoes": 15,
+      "corretas": 15,
+      "precisao": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "atraso_mediano_min": 208.4
+    },
+    "sensor_picos": {
+      "incidentes": 35,
+      "invisiveis": 2,
+      "detectados": 35,
+      "deteccoes": 41,
+      "corretas": 41,
+      "precisao": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "atraso_mediano_min": 36.5
+    },
+    "sensor_sem_leitura": {
+      "incidentes": 27,
+      "invisiveis": 0,
+      "detectados": 27,
+      "deteccoes": 27,
+      "corretas": 27,
+      "precisao": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "atraso_mediano_min": 0.0
+    }
+  },
+  "simulacoes": [
+    {
+      "simulacao": "calib-1",
+      "segundos": 18.77,
+      "fonte": "leituras brutas",
+      "total": {
+        "incidentes": 27,
+        "invisiveis": 0,
+        "detectados": 27,
+        "deteccoes": 30,
+        "corretas": 30,
+        "precisao": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "atraso_mediano_min": 0.0
+      },
+      "por_tipo": {
+        "falha_crac": {
+          "incidentes": 4,
+          "invisiveis": 0,
+          "detectados": 4,
+          "deteccoes": 4,
+          "corretas": 4,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.4
+        },
+        "super_refrigeracao": {
+          "incidentes": 0,
+          "invisiveis": 0,
+          "detectados": 0,
+          "deteccoes": 0,
+          "corretas": 0,
+          "precisao": null,
+          "recall": null,
+          "f1": null,
+          "atraso_mediano_min": null
+        },
+        "rack_sobrecarregado": {
+          "incidentes": 8,
+          "invisiveis": 0,
+          "detectados": 8,
+          "deteccoes": 8,
+          "corretas": 8,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        },
+        "recirculacao": {
+          "incidentes": 2,
+          "invisiveis": 0,
+          "detectados": 2,
+          "deteccoes": 2,
+          "corretas": 2,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        },
+        "sensor_congelado": {
+          "incidentes": 2,
+          "invisiveis": 0,
+          "detectados": 2,
+          "deteccoes": 2,
+          "corretas": 2,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        },
+        "sensor_deriva": {
+          "incidentes": 2,
+          "invisiveis": 0,
+          "detectados": 2,
+          "deteccoes": 2,
+          "corretas": 2,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 120.2
+        },
+        "sensor_picos": {
+          "incidentes": 2,
+          "invisiveis": 0,
+          "detectados": 2,
+          "deteccoes": 5,
+          "corretas": 5,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 36.1
+        },
+        "sensor_sem_leitura": {
+          "incidentes": 7,
+          "invisiveis": 0,
+          "detectados": 7,
+          "deteccoes": 7,
+          "corretas": 7,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        }
+      },
+      "perdidos": [],
+      "invisiveis": [],
+      "falsos": [],
+      "confusoes": [],
+      "seed": 1,
+      "leituras": 43718400,
+      "sensores": 1012,
+      "dias": 30.0,
+      "intervalo_s": 60,
+      "parametros_ajustados": {
+        "alcance_retorno_m": 1.5
+      }
+    },
+    {
+      "simulacao": "calib-2",
+      "segundos": 24.3,
+      "fonte": "leituras brutas",
+      "total": {
+        "incidentes": 30,
+        "invisiveis": 0,
+        "detectados": 30,
+        "deteccoes": 30,
+        "corretas": 30,
+        "precisao": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "atraso_mediano_min": 0.1
+      },
+      "por_tipo": {
+        "falha_crac": {
+          "incidentes": 8,
+          "invisiveis": 0,
+          "detectados": 8,
+          "deteccoes": 8,
+          "corretas": 8,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        },
+        "super_refrigeracao": {
+          "incidentes": 1,
+          "invisiveis": 0,
+          "detectados": 1,
+          "deteccoes": 1,
+          "corretas": 1,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 2.4
+        },
+        "rack_sobrecarregado": {
+          "incidentes": 3,
+          "invisiveis": 0,
+          "detectados": 3,
+          "deteccoes": 3,
+          "corretas": 3,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        },
+        "recirculacao": {
+          "incidentes": 6,
+          "invisiveis": 0,
+          "detectados": 6,
+          "deteccoes": 6,
+          "corretas": 6,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        },
+        "sensor_congelado": {
+          "incidentes": 6,
+          "invisiveis": 0,
+          "detectados": 6,
+          "deteccoes": 6,
+          "corretas": 6,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.4
+        },
+        "sensor_deriva": {
+          "incidentes": 0,
+          "invisiveis": 0,
+          "detectados": 0,
+          "deteccoes": 0,
+          "corretas": 0,
+          "precisao": null,
+          "recall": null,
+          "f1": null,
+          "atraso_mediano_min": null
+        },
+        "sensor_picos": {
+          "incidentes": 4,
+          "invisiveis": 0,
+          "detectados": 4,
+          "deteccoes": 4,
+          "corretas": 4,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 19.4
+        },
+        "sensor_sem_leitura": {
+          "incidentes": 2,
+          "invisiveis": 0,
+          "detectados": 2,
+          "deteccoes": 2,
+          "corretas": 2,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        }
+      },
+      "perdidos": [],
+      "invisiveis": [],
+      "falsos": [],
+      "confusoes": [],
+      "seed": 2,
+      "leituras": 43718400,
+      "sensores": 1012,
+      "dias": 30.0,
+      "intervalo_s": 60,
+      "parametros_ajustados": {
+        "alcance_retorno_m": 1.5
+      }
+    },
+    {
+      "simulacao": "calib-3",
+      "segundos": 27.27,
+      "fonte": "leituras brutas",
+      "total": {
+        "incidentes": 32,
+        "invisiveis": 0,
+        "detectados": 32,
+        "deteccoes": 32,
+        "corretas": 32,
+        "precisao": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "atraso_mediano_min": 0.0
+      },
+      "por_tipo": {
+        "falha_crac": {
+          "incidentes": 3,
+          "invisiveis": 0,
+          "detectados": 3,
+          "deteccoes": 3,
+          "corretas": 3,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.1
+        },
+        "super_refrigeracao": {
+          "incidentes": 1,
+          "invisiveis": 0,
+          "detectados": 1,
+          "deteccoes": 1,
+          "corretas": 1,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 4.4
+        },
+        "rack_sobrecarregado": {
+          "incidentes": 14,
+          "invisiveis": 0,
+          "detectados": 14,
+          "deteccoes": 14,
+          "corretas": 14,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        },
+        "recirculacao": {
+          "incidentes": 3,
+          "invisiveis": 0,
+          "detectados": 3,
+          "deteccoes": 3,
+          "corretas": 3,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        },
+        "sensor_congelado": {
+          "incidentes": 2,
+          "invisiveis": 0,
+          "detectados": 2,
+          "deteccoes": 2,
+          "corretas": 2,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.2
+        },
+        "sensor_deriva": {
+          "incidentes": 1,
+          "invisiveis": 0,
+          "detectados": 1,
+          "deteccoes": 1,
+          "corretas": 1,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 284.2
+        },
+        "sensor_picos": {
+          "incidentes": 6,
+          "invisiveis": 0,
+          "detectados": 6,
+          "deteccoes": 6,
+          "corretas": 6,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 17.2
+        },
+        "sensor_sem_leitura": {
+          "incidentes": 2,
+          "invisiveis": 0,
+          "detectados": 2,
+          "deteccoes": 2,
+          "corretas": 2,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        }
+      },
+      "perdidos": [],
+      "invisiveis": [],
+      "falsos": [],
+      "confusoes": [],
+      "seed": 3,
+      "leituras": 43718400,
+      "sensores": 1012,
+      "dias": 30.0,
+      "intervalo_s": 60,
+      "parametros_ajustados": {
+        "alcance_retorno_m": 1.5
+      }
+    },
+    {
+      "simulacao": "calib-estresse-11",
+      "segundos": 14.27,
+      "fonte": "leituras brutas",
+      "total": {
+        "incidentes": 72,
+        "invisiveis": 1,
+        "detectados": 72,
+        "deteccoes": 73,
+        "corretas": 73,
+        "precisao": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "atraso_mediano_min": 0.0
+      },
+      "por_tipo": {
+        "falha_crac": {
+          "incidentes": 10,
+          "invisiveis": 0,
+          "detectados": 10,
+          "deteccoes": 10,
+          "corretas": 10,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        },
+        "super_refrigeracao": {
+          "incidentes": 1,
+          "invisiveis": 0,
+          "detectados": 1,
+          "deteccoes": 1,
+          "corretas": 1,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 3.3
+        },
+        "rack_sobrecarregado": {
+          "incidentes": 24,
+          "invisiveis": 0,
+          "detectados": 24,
+          "deteccoes": 24,
+          "corretas": 24,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        },
+        "recirculacao": {
+          "incidentes": 8,
+          "invisiveis": 0,
+          "detectados": 8,
+          "deteccoes": 8,
+          "corretas": 8,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        },
+        "sensor_congelado": {
+          "incidentes": 8,
+          "invisiveis": 0,
+          "detectados": 8,
+          "deteccoes": 8,
+          "corretas": 8,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.1
+        },
+        "sensor_deriva": {
+          "incidentes": 7,
+          "invisiveis": 0,
+          "detectados": 7,
+          "deteccoes": 7,
+          "corretas": 7,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 198.8
+        },
+        "sensor_picos": {
+          "incidentes": 7,
+          "invisiveis": 1,
+          "detectados": 7,
+          "deteccoes": 8,
+          "corretas": 8,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 59.4
+        },
+        "sensor_sem_leitura": {
+          "incidentes": 7,
+          "invisiveis": 0,
+          "detectados": 7,
+          "deteccoes": 7,
+          "corretas": 7,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        }
+      },
+      "perdidos": [],
+      "invisiveis": [
+        {
+          "tipo": "sensor_picos",
+          "alvo": "J-15/saida",
+          "inicio": "2026-11-09T12:58:56+00:00",
+          "fim": "2026-11-09T15:03:46+00:00",
+          "descricao": "Sensor J-15/saida com picos espúrios em 2% das leituras",
+          "visivel": false
+        }
+      ],
+      "falsos": [],
+      "confusoes": [],
+      "seed": 11,
+      "leituras": 20401920,
+      "sensores": 1012,
+      "dias": 14.0,
+      "intervalo_s": 60,
+      "parametros_ajustados": {
+        "alcance_retorno_m": 1.5
+      }
+    },
+    {
+      "simulacao": "calib-estresse-12",
+      "segundos": 14.87,
+      "fonte": "leituras brutas",
+      "total": {
+        "incidentes": 63,
+        "invisiveis": 1,
+        "detectados": 63,
+        "deteccoes": 65,
+        "corretas": 65,
+        "precisao": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "atraso_mediano_min": 1.7
+      },
+      "por_tipo": {
+        "falha_crac": {
+          "incidentes": 7,
+          "invisiveis": 0,
+          "detectados": 7,
+          "deteccoes": 7,
+          "corretas": 7,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        },
+        "super_refrigeracao": {
+          "incidentes": 5,
+          "invisiveis": 0,
+          "detectados": 5,
+          "deteccoes": 5,
+          "corretas": 5,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 5.9
+        },
+        "rack_sobrecarregado": {
+          "incidentes": 10,
+          "invisiveis": 0,
+          "detectados": 10,
+          "deteccoes": 10,
+          "corretas": 10,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        },
+        "recirculacao": {
+          "incidentes": 5,
+          "invisiveis": 0,
+          "detectados": 5,
+          "deteccoes": 5,
+          "corretas": 5,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        },
+        "sensor_congelado": {
+          "incidentes": 6,
+          "invisiveis": 0,
+          "detectados": 6,
+          "deteccoes": 6,
+          "corretas": 6,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.3
+        },
+        "sensor_deriva": {
+          "incidentes": 5,
+          "invisiveis": 0,
+          "detectados": 5,
+          "deteccoes": 5,
+          "corretas": 5,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 311.0
+        },
+        "sensor_picos": {
+          "incidentes": 16,
+          "invisiveis": 1,
+          "detectados": 16,
+          "deteccoes": 18,
+          "corretas": 18,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 37.6
+        },
+        "sensor_sem_leitura": {
+          "incidentes": 9,
+          "invisiveis": 0,
+          "detectados": 9,
+          "deteccoes": 9,
+          "corretas": 9,
+          "precisao": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "atraso_mediano_min": 0.0
+        }
+      },
+      "perdidos": [],
+      "invisiveis": [
+        {
+          "tipo": "sensor_picos",
+          "alvo": "F-16/saida",
+          "inicio": "2026-11-07T19:17:20+00:00",
+          "fim": "2026-11-07T22:02:01+00:00",
+          "descricao": "Sensor F-16/saida com picos espúrios em 2% das leituras",
+          "visivel": false
+        }
+      ],
+      "falsos": [],
+      "confusoes": [],
+      "seed": 12,
+      "leituras": 20401920,
+      "sensores": 1012,
+      "dias": 14.0,
+      "intervalo_s": 60,
+      "parametros_ajustados": {
+        "alcance_retorno_m": 1.5
+      }
+    }
+  ]
+}
