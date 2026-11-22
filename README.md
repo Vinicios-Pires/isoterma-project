@@ -46,7 +46,8 @@ Pergunta em PT-BR → LLM gera SQL → DuckDB sobre Parquet → resultado + anom
   - [x] [Camada de IA](docs/IA.md): agente com ferramentas, Claude, OpenAI e Gemini plugáveis, e avaliação de LLMs
   - [ ] Detecção de anomalias
   - [x] [API](docs/API.md) (FastAPI): o motor e a IA por HTTP, com streaming das consultas do agente
-  - [ ] Web (React + Vite + TypeScript) com o mapa de isotermas
+  - [x] [Web](docs/WEB.md) (React + Vite + TypeScript): Painel e Mapa térmico com isotermas e controle de tempo
+  - [ ] Web: detalhe de rack e CRAC, e o chat com a IA
   - [ ] Demo pública: DuckDB-WASM no navegador, Cloudflare Pages + R2, Cloud Run
 - **Fase 3: mundo real**
   - [ ] Clima externo real (Open-Meteo/INMET) como entrada do simulador
@@ -79,6 +80,13 @@ uv run isoterma perguntar data/demo "o que aconteceu na fileira A no dia 7 de ma
 O simulador gera **1 bilhão de leituras em cerca de 20 s** num desktop de 6 núcleos
 (`--preset bilhao`). Os detalhes do modelo, dos incidentes e do esquema estão em
 [docs/SIMULADOR.md](docs/SIMULADOR.md).
+
+Para a interface web, suba a API e o front (detalhes em [docs/WEB.md](docs/WEB.md)):
+
+```bash
+uv sync --extra api && uv run isoterma servir data
+cd web && npm install && npm run dev    # http://localhost:5173
+```
 
 Todos os comandos, com exemplos e opções, estão em [docs/COMANDOS.md](docs/COMANDOS.md). A
 própria CLI também mostra a ajuda: `uv run isoterma --help` e `uv run isoterma <comando> --help`.
@@ -115,6 +123,7 @@ uv run pyright              # checagem de tipos
 src/isoterma/   pacote principal: CLI, simulador, motor, benchmark, IA e API
 tests/          testes automatizados
 docs/           documentação, incluindo a evolução do projeto
+web/            o front (React + Vite + TypeScript)
 legacy/         o projeto original da aula, preservado intocado
 ```
 
