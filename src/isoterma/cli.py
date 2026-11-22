@@ -540,6 +540,92 @@ def relatorio_ia(
     typer.echo(f"Relatório gravado em {saida}")
 
 
+# --- Anomalias ------------------------------------------------------------------------------
+
+
+@app.command()
+def detectar(
+    diretorio: DiretorioSimulacao,
+    tipo: Annotated[
+        list[str] | None, typer.Option(help="Só estes tipos (repita a opção). Padrão: todos.")
+    ] = None,
+    json_saida: Annotated[
+        Path | None, typer.Option("--json", help="Grava também as detecções em JSON.")
+    ] = None,
+) -> None:
+    """Procura anomalias com detectores explicáveis, sem olhar o gabarito."""
+    import json
+    from zoneinfo import ZoneInfo
+
+    from isoterma.anomalias import detectar as rodar_detectores
+    from isoterma.dados import ler_manifesto
+
+    try:
+        resultado = rodar_detectores(diretorio)
+    except FileNotFoundError as erro:
+        _falhar(erro)
+    fuso = ZoneInfo(ler_manifesto(diretorio)["config"]["periodo"]["fuso"])
+    deteccoes = [d for d in resultado.deteccoes if not tipo or d.tipo in tipo]
+    for d in deteccoes:
+        typer.echo(
+            f"{d.inicio.astimezone(fuso):%Y-%m-%d %H:%M} a {d.fim.astimezone(fuso):%d %H:%M}  "
+            f"{d.tipo:<20} {d.alvo:<22} {d.evidencia}"
+        )
+    typer.echo(
+        f"\n{len(deteccoes)} detecções em {numero(resultado.segundos, 1)} s "
+        f"(fonte: {resultado.fonte}; horários em {fuso.key})"
+    )
+    if json_saida:
+        json_saida.write_text(
+            json.dumps(resultado.como_dict(), ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+        typer.echo(f"Detecções gravadas em {json_saida}")
+
+
+@app.command("avaliar-deteccao")
+def avaliar_deteccao(
+    diretorios: Annotated[
+        list[Path],
+        typer.Argument(help="Pastas de simulações.", exists=True, file_okay=False),
+    ],
+    grupo: Annotated[
+        str, typer.Option(help="Nome do conjunto: calibracao, validacao ou teste.")
+    ] = "teste",
+    resultado: Annotated[
+        Path | None,
+        typer.Option(help="JSON de saída (padrão: docs/deteccao/<grupo>.json)."),
+    ] = None,
+) -> None:
+    """Mede os detectores contra o gabarito de cada simulação. Não chama nenhuma API."""
+    from isoterma.anomalias.relatorio import avaliar_conjunto, salvar
+
+    conjunto = avaliar_conjunto(diretorios, grupo, aviso=typer.echo)
+    destino = resultado or Path("docs/deteccao") / f"{grupo}.json"
+    salvar(conjunto, destino)
+    t = conjunto["total"]
+    typer.echo(
+        f"\nTotal: {t['detectados']}/{t['incidentes']} incidentes detectados, "
+        f"{t['corretas']}/{t['deteccoes']} alertas corretos. Resultado gravado em {destino}"
+    )
+
+
+@app.command("relatorio-deteccao")
+def relatorio_deteccao(
+    resultados: Annotated[
+        list[Path],
+        typer.Argument(help="JSONs gerados por `isoterma avaliar-deteccao`.", exists=True),
+    ],
+    saida: Annotated[Path, typer.Option(help="Arquivo Markdown.")] = Path("docs/DETECCAO.md"),
+) -> None:
+    """Gera o relatório em Markdown da detecção de anomalias."""
+    from isoterma.anomalias.relatorio import carregar, gerar_relatorio
+
+    saida.parent.mkdir(parents=True, exist_ok=True)
+    texto = gerar_relatorio([carregar(r) for r in resultados])
+    saida.write_text(texto, encoding="utf-8", newline="\n")
+    typer.echo(f"Relatório gravado em {saida}")
+
+
 # --- API ------------------------------------------------------------------------------------
 
 

@@ -1,0 +1,31 @@
+# Um hall diferente do da demo, para testar se os detectores generalizam: outra geometria,
+# outro setpoint e leituras a cada 30 s (os detectores agrupam por minuto). Nenhuma simulação
+# deste cenário foi usada para calibrar os detectores.
+#
+#   uv run isoterma simular --config cenarios/hall-alternativo.toml --seed 501
+nome = "hall-alternativo"
+seed = 501
+
+[hall]
+fileiras = 6
+racks_por_fileira = 12
+cracs = 4
+
+[periodo]
+inicio = 2026-12-01T00:00:00Z
+dias = 10
+intervalo_s = 30
+fuso = "America/Sao_Paulo"
+
+[termica]
+setpoint_c = 20.0
+
+[incidentes.taxas_por_dia]
+falha_crac = 0.3
+super_refrigeracao = 0.15
+rack_sobrecarregado = 0.8
+recirculacao = 0.3
+sensor_congelado = 0.4
+sensor_deriva = 0.3
+sensor_picos = 0.4
+sensor_sem_leitura = 0.4

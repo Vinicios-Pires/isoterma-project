@@ -44,11 +44,12 @@ Pergunta em PT-BR → LLM gera SQL → DuckDB sobre Parquet → resultado + anom
   - [x] [Benchmark](docs/BENCHMARK.md) com validação cruzada entre engines (Python, pandas, Polars, DuckDB)
 - **Fase 2: inteligência**
   - [x] [Camada de IA](docs/IA.md): agente com ferramentas, Claude, OpenAI e Gemini plugáveis, e avaliação de LLMs
-  - [ ] Detecção de anomalias
+  - [x] [Detecção de anomalias](docs/ANOMALIAS.md) explicável, medida contra o gabarito: [recall de 100% e precisão de 96,7%](docs/DETECCAO.md) num conjunto de teste separado
   - [x] [API](docs/API.md) (FastAPI): o motor e a IA por HTTP, com streaming das consultas do agente
   - [x] [Web](docs/WEB.md) (React + Vite + TypeScript): Painel e Mapa térmico com isotermas e controle de tempo
   - [x] Web: séries de rack e CRAC (zoom por arraste, gabarito sobreposto) e o chat com a IA em streaming
-  - [ ] Demo pública: DuckDB-WASM no navegador, Cloudflare Pages + R2, Cloud Run
+  - [ ] Anomalias na API e na web
+  - [ ] Demo pública: Cloudflare Pages + Cloud Run
 - **Fase 3: mundo real**
   - [ ] Clima externo real (Open-Meteo/INMET) como entrada do simulador
   - [ ] Alertas e relatórios automáticos
@@ -120,7 +121,8 @@ uv run pyright              # checagem de tipos
 ## Estrutura
 
 ```
-src/isoterma/   pacote principal: CLI, simulador, motor, benchmark, IA e API
+src/isoterma/   pacote principal: CLI, simulador, motor, benchmark, IA, anomalias e API
+cenarios/       halls de exemplo para o simulador (estresse e geometria alternativa)
 tests/          testes automatizados
 docs/           documentação, incluindo a evolução do projeto
 web/            o front (React + Vite + TypeScript)
