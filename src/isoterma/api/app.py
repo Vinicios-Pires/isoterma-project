@@ -23,6 +23,8 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.sse import EventSourceResponse, ServerSentEvent
 
 from isoterma import __version__
+from isoterma.anomalias import detectar, ler_gabarito
+from isoterma.anomalias.avaliacao import avaliar, corresponde
 from isoterma.api import esquemas as e
 from isoterma.dados import MANIFESTO, ler_manifesto
 from isoterma.ia.agente import Agente, Passo, Resposta
@@ -45,6 +47,8 @@ class ConfigApi:
     teto_diario_usd: float = 1.0  # custo estimado somado de todas as perguntas do dia (UTC)
     origens_cors: tuple[str, ...] = ("http://localhost:5173", "http://127.0.0.1:5173")
     confiar_proxy: bool = False  # usar X-Forwarded-For (atrás do Cloud Run, por exemplo)
+    # Simulações cujas anomalias já são calculadas ao subir, para a primeira visita não esperar.
+    preparar_anomalias: tuple[str, ...] = ()
 
 
 @dataclass
@@ -82,6 +86,8 @@ class Catalogo:
     def __init__(self, dados: Path) -> None:
         self.dados = dados.resolve()
         self._halls: dict[tuple[str, bool], Hall] = {}
+        self._anomalias: dict[str, e.Anomalias] = {}
+        self._travas_anomalias: dict[str, threading.Lock] = defaultdict(threading.Lock)
         self._trava = threading.Lock()
 
     def nomes(self) -> list[str]:
@@ -99,6 +105,19 @@ class Catalogo:
                 self._halls[chave] = Hall(self.dados / nome, ocultar_gabarito=not com_gabarito)
             return self._halls[chave]
 
+    def anomalias(self, nome: str) -> e.Anomalias:
+        """Roda os detectores uma vez por simulação (leva alguns segundos) e guarda o resultado.
+
+        Pedidos simultâneos para a mesma simulação esperam o mesmo cálculo.
+        """
+        hall = self.hall(nome)
+        with self._trava:
+            trava = self._travas_anomalias[nome]
+        with trava:
+            if nome not in self._anomalias:
+                self._anomalias[nome] = _calcular_anomalias(self, nome, hall.diretorio)
+            return self._anomalias[nome]
+
     def fechar(self) -> None:
         with self._trava:
             for hall in self._halls.values():
@@ -108,6 +127,61 @@ class Catalogo:
 
 def _linhas(hall: Hall, sql: str) -> list[dict[str, Any]]:
     return hall.consultar(sql, limite=1_000_000).linhas()
+
+
+def _placar(placar: dict[str, Any]) -> e.Placar:
+    return e.Placar(
+        **{k: v for k, v in placar.items() if k not in ("deteccoes", "corretas")},
+        alertas=placar["deteccoes"],
+        corretos=placar["corretas"],
+    )
+
+
+def _calcular_anomalias(catalogo: Catalogo, nome: str, diretorio: Path) -> e.Anomalias:
+    resultado = detectar(diretorio)
+    tem_gabarito = (diretorio / "incidentes.parquet").is_file()
+    gabarito = ler_gabarito(diretorio) if tem_gabarito else []
+    ids: list[int] = []
+    if tem_gabarito:
+        # Mesma ordem do ler_gabarito, para casar cada incidente com o id que a API expõe.
+        sql = "SELECT incidente_id FROM incidentes ORDER BY inicio, tipo, alvo"
+        ids = [r["incidente_id"] for r in _linhas(catalogo.hall(nome, com_gabarito=True), sql)]
+
+    alertas = [
+        e.Alerta(
+            alerta_id=n + 1,
+            tipo=d.tipo,
+            alvo=d.alvo,
+            equipamento=d.alvo.split("/")[0],
+            inicio=d.inicio,
+            fim=d.fim,
+            evidencia=d.evidencia,
+            medida=round(d.medida, 2),
+            incidentes=(
+                [i for i, inc in zip(ids, gabarito, strict=True) if corresponde(d, inc)]
+                if tem_gabarito
+                else None
+            ),
+        )
+        for n, d in enumerate(sorted(resultado.deteccoes, key=lambda d: (d.inicio, d.alvo)))
+    ]
+    avaliacao = None
+    if tem_gabarito:
+        medida = avaliar(nome, resultado, gabarito)
+        id_de = {id(inc): i for i, inc in zip(ids, gabarito, strict=True)}
+        avaliacao = e.Avaliacao(
+            total=_placar(medida.total.como_dict()),
+            por_tipo={t: _placar(p.como_dict()) for t, p in medida.por_tipo.items()},
+            perdidos=[id_de[id(inc)] for inc in medida.perdidos],
+            invisiveis=[id_de[id(inc)] for inc in medida.invisiveis],
+        )
+    return e.Anomalias(
+        alertas=alertas,
+        fonte=resultado.fonte,
+        segundos=round(resultado.segundos, 2),
+        alcance_retorno_m=resultado.parametros.get("alcance_retorno_m"),
+        avaliacao=avaliacao,
+    )
 
 
 def _evento_passo(passo: Passo) -> e.EventoPasso:
@@ -262,6 +336,15 @@ def criar_app(
         hall = catalogo.hall(simulacao, com_gabarito=True)
         return [e.Incidente(**i) for i in _linhas(hall, "SELECT * FROM incidentes ORDER BY inicio")]
 
+    @api.get(
+        "/{simulacao}/anomalias",
+        description="Os alertas dos detectores de anomalias, cada um com a explicação do que foi "
+        "visto. Os detectores não leem o gabarito; a avaliação contra ele vem à parte. O primeiro "
+        "pedido de cada simulação roda os detectores (alguns segundos); os seguintes vêm do cache.",
+    )
+    def anomalias(simulacao: str) -> e.Anomalias:
+        return catalogo.anomalias(simulacao)
+
     def preparar_pergunta(simulacao: str, request: Request) -> tuple[Hall, Provedor]:
         """Valida tudo antes de abrir o streaming, para os erros saírem como HTTP comum."""
         if config.llm is None:
@@ -316,6 +399,17 @@ def criar_app(
             yield evento
 
     app.include_router(api)
+
+    def preparar() -> None:
+        for nome in config.preparar_anomalias:
+            if nome in catalogo.nomes():
+                try:
+                    catalogo.anomalias(nome)
+                except Exception:
+                    log.exception("Falha ao preparar as anomalias de %s", nome)
+
+    if config.preparar_anomalias:
+        threading.Thread(target=preparar, daemon=True, name="preparar-anomalias").start()
 
     def esquema_openapi() -> dict[str, Any]:
         """O OpenAPI padrão mais os modelos dos eventos do streaming.

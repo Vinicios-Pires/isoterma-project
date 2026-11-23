@@ -1,6 +1,165 @@
 {
   "components": {
     "schemas": {
+      "Alerta": {
+        "description": "Uma anomalia encontrada pelos detectores, com a explicação do que foi visto.",
+        "properties": {
+          "alerta_id": {
+            "title": "Alerta Id",
+            "type": "integer"
+          },
+          "alvo": {
+            "description": "Rack, CRAC ou sensor, ex.: B-05/entrada-topo",
+            "title": "Alvo",
+            "type": "string"
+          },
+          "equipamento": {
+            "description": "O rack ou CRAC do alvo, ex.: B-05",
+            "title": "Equipamento",
+            "type": "string"
+          },
+          "evidencia": {
+            "title": "Evidencia",
+            "type": "string"
+          },
+          "fim": {
+            "format": "date-time",
+            "title": "Fim",
+            "type": "string"
+          },
+          "incidentes": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Incidentes do gabarito que o alerta acertou: vazio é alerta falso. Nulo quando a simulação não tem gabarito.",
+            "title": "Incidentes"
+          },
+          "inicio": {
+            "format": "date-time",
+            "title": "Inicio",
+            "type": "string"
+          },
+          "medida": {
+            "description": "O valor que mais se afastou do normal",
+            "title": "Medida",
+            "type": "number"
+          },
+          "tipo": {
+            "title": "Tipo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "alerta_id",
+          "tipo",
+          "alvo",
+          "equipamento",
+          "inicio",
+          "fim",
+          "evidencia",
+          "medida",
+          "incidentes"
+        ],
+        "title": "Alerta",
+        "type": "object"
+      },
+      "Anomalias": {
+        "properties": {
+          "alcance_retorno_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Parâmetro do modelo do retorno, ajustado pelos próprios dados",
+            "title": "Alcance Retorno M"
+          },
+          "alertas": {
+            "items": {
+              "$ref": "#/components/schemas/Alerta"
+            },
+            "title": "Alertas",
+            "type": "array"
+          },
+          "avaliacao": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Avaliacao"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fonte": {
+            "description": "De onde os detectores leram os dados",
+            "title": "Fonte",
+            "type": "string"
+          },
+          "segundos": {
+            "title": "Segundos",
+            "type": "number"
+          }
+        },
+        "required": [
+          "alertas",
+          "fonte",
+          "segundos",
+          "alcance_retorno_m",
+          "avaliacao"
+        ],
+        "title": "Anomalias",
+        "type": "object"
+      },
+      "Avaliacao": {
+        "description": "Os alertas medidos contra o gabarito (só existe porque os dados são simulados).",
+        "properties": {
+          "invisiveis": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Invisiveis",
+            "type": "array"
+          },
+          "perdidos": {
+            "description": "Incidentes visíveis que nenhum alerta acertou",
+            "items": {
+              "type": "integer"
+            },
+            "title": "Perdidos",
+            "type": "array"
+          },
+          "por_tipo": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Placar"
+            },
+            "title": "Por Tipo",
+            "type": "object"
+          },
+          "total": {
+            "$ref": "#/components/schemas/Placar"
+          }
+        },
+        "required": [
+          "total",
+          "por_tipo",
+          "perdidos",
+          "invisiveis"
+        ],
+        "title": "Avaliacao",
+        "type": "object"
+      },
       "CracPlanta": {
         "properties": {
           "crac_id": {
@@ -349,6 +508,89 @@
           "pergunta"
         ],
         "title": "Pergunta",
+        "type": "object"
+      },
+      "Placar": {
+        "properties": {
+          "alertas": {
+            "title": "Alertas",
+            "type": "integer"
+          },
+          "atraso_mediano_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Atraso Mediano Min"
+          },
+          "corretos": {
+            "title": "Corretos",
+            "type": "integer"
+          },
+          "detectados": {
+            "title": "Detectados",
+            "type": "integer"
+          },
+          "f1": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "F1"
+          },
+          "incidentes": {
+            "description": "Incidentes que afetaram as leituras",
+            "title": "Incidentes",
+            "type": "integer"
+          },
+          "invisiveis": {
+            "description": "Defeitos que não afetaram nenhuma leitura",
+            "title": "Invisiveis",
+            "type": "integer"
+          },
+          "precisao": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Precisao"
+          },
+          "recall": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recall"
+          }
+        },
+        "required": [
+          "incidentes",
+          "invisiveis",
+          "detectados",
+          "alertas",
+          "corretos",
+          "precisao",
+          "recall",
+          "f1",
+          "atraso_mediano_min"
+        ],
+        "title": "Placar",
         "type": "object"
       },
       "Planta": {
@@ -943,6 +1185,46 @@
           }
         },
         "summary": "Simulacoes"
+      }
+    },
+    "/api/{simulacao}/anomalias": {
+      "get": {
+        "description": "Os alertas dos detectores de anomalias, cada um com a explicação do que foi visto. Os detectores não leem o gabarito; a avaliação contra ele vem à parte. O primeiro pedido de cada simulação roda os detectores (alguns segundos); os seguintes vêm do cache.",
+        "operationId": "anomalias_api__simulacao__anomalias_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "simulacao",
+            "required": true,
+            "schema": {
+              "title": "Simulacao",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Anomalias"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Anomalias"
       }
     },
     "/api/{simulacao}/fora-da-faixa": {

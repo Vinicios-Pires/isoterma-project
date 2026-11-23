@@ -125,6 +125,54 @@ class Incidente(BaseModel):
     descricao: str
 
 
+class Alerta(BaseModel):
+    """Uma anomalia encontrada pelos detectores, com a explicação do que foi visto."""
+
+    alerta_id: int
+    tipo: str
+    alvo: str = Field(description="Rack, CRAC ou sensor, ex.: B-05/entrada-topo")
+    equipamento: str = Field(description="O rack ou CRAC do alvo, ex.: B-05")
+    inicio: datetime
+    fim: datetime
+    evidencia: str
+    medida: float = Field(description="O valor que mais se afastou do normal")
+    incidentes: list[int] | None = Field(
+        description="Incidentes do gabarito que o alerta acertou: vazio é alerta falso. "
+        "Nulo quando a simulação não tem gabarito."
+    )
+
+
+class Placar(BaseModel):
+    incidentes: int = Field(description="Incidentes que afetaram as leituras")
+    invisiveis: int = Field(description="Defeitos que não afetaram nenhuma leitura")
+    detectados: int
+    alertas: int
+    corretos: int
+    precisao: float | None
+    recall: float | None
+    f1: float | None
+    atraso_mediano_min: float | None
+
+
+class Avaliacao(BaseModel):
+    """Os alertas medidos contra o gabarito (só existe porque os dados são simulados)."""
+
+    total: Placar
+    por_tipo: dict[str, Placar]
+    perdidos: list[int] = Field(description="Incidentes visíveis que nenhum alerta acertou")
+    invisiveis: list[int]
+
+
+class Anomalias(BaseModel):
+    alertas: list[Alerta]
+    fonte: str = Field(description="De onde os detectores leram os dados")
+    segundos: float
+    alcance_retorno_m: float | None = Field(
+        description="Parâmetro do modelo do retorno, ajustado pelos próprios dados"
+    )
+    avaliacao: Avaliacao | None
+
+
 class Pergunta(BaseModel):
     pergunta: str = Field(min_length=1, max_length=2_000)
 

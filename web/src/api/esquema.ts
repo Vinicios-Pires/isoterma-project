@@ -38,6 +38,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/{simulacao}/anomalias": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Anomalias
+         * @description Os alertas dos detectores de anomalias, cada um com a explicação do que foi visto. Os detectores não leem o gabarito; a avaliação contra ele vem à parte. O primeiro pedido de cada simulação roda os detectores (alguns segundos); os seguintes vêm do cache.
+         */
+        get: operations["anomalias_api__simulacao__anomalias_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/{simulacao}/fora-da-faixa": {
         parameters: {
             query?: never;
@@ -167,6 +187,84 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * Alerta
+         * @description Uma anomalia encontrada pelos detectores, com a explicação do que foi visto.
+         */
+        Alerta: {
+            /** Alerta Id */
+            alerta_id: number;
+            /**
+             * Alvo
+             * @description Rack, CRAC ou sensor, ex.: B-05/entrada-topo
+             */
+            alvo: string;
+            /**
+             * Equipamento
+             * @description O rack ou CRAC do alvo, ex.: B-05
+             */
+            equipamento: string;
+            /** Evidencia */
+            evidencia: string;
+            /**
+             * Fim
+             * Format: date-time
+             */
+            fim: string;
+            /**
+             * Incidentes
+             * @description Incidentes do gabarito que o alerta acertou: vazio é alerta falso. Nulo quando a simulação não tem gabarito.
+             */
+            incidentes: number[] | null;
+            /**
+             * Inicio
+             * Format: date-time
+             */
+            inicio: string;
+            /**
+             * Medida
+             * @description O valor que mais se afastou do normal
+             */
+            medida: number;
+            /** Tipo */
+            tipo: string;
+        };
+        /** Anomalias */
+        Anomalias: {
+            /**
+             * Alcance Retorno M
+             * @description Parâmetro do modelo do retorno, ajustado pelos próprios dados
+             */
+            alcance_retorno_m: number | null;
+            /** Alertas */
+            alertas: components["schemas"]["Alerta"][];
+            avaliacao: components["schemas"]["Avaliacao"] | null;
+            /**
+             * Fonte
+             * @description De onde os detectores leram os dados
+             */
+            fonte: string;
+            /** Segundos */
+            segundos: number;
+        };
+        /**
+         * Avaliacao
+         * @description Os alertas medidos contra o gabarito (só existe porque os dados são simulados).
+         */
+        Avaliacao: {
+            /** Invisiveis */
+            invisiveis: number[];
+            /**
+             * Perdidos
+             * @description Incidentes visíveis que nenhum alerta acertou
+             */
+            perdidos: number[];
+            /** Por Tipo */
+            por_tipo: {
+                [key: string]: components["schemas"]["Placar"];
+            };
+            total: components["schemas"]["Placar"];
+        };
         /** CracPlanta */
         CracPlanta: {
             /** Crac Id */
@@ -299,6 +397,33 @@ export interface components {
         Pergunta: {
             /** Pergunta */
             pergunta: string;
+        };
+        /** Placar */
+        Placar: {
+            /** Alertas */
+            alertas: number;
+            /** Atraso Mediano Min */
+            atraso_mediano_min: number | null;
+            /** Corretos */
+            corretos: number;
+            /** Detectados */
+            detectados: number;
+            /** F1 */
+            f1: number | null;
+            /**
+             * Incidentes
+             * @description Incidentes que afetaram as leituras
+             */
+            incidentes: number;
+            /**
+             * Invisiveis
+             * @description Defeitos que não afetaram nenhuma leitura
+             */
+            invisiveis: number;
+            /** Precisao */
+            precisao: number | null;
+            /** Recall */
+            recall: number | null;
         };
         /** Planta */
         Planta: {
@@ -544,6 +669,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Simulacao"][];
+                };
+            };
+        };
+    };
+    anomalias_api__simulacao__anomalias_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                simulacao: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Anomalias"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

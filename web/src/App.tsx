@@ -11,6 +11,7 @@ import { Painel } from '@/paginas/Painel'
 // O mapa (e o D3 que ele usa) só é baixado quando alguém abre a página.
 const Mapa = lazy(() => import('@/paginas/Mapa').then((m) => ({ default: m.Mapa })))
 const Detalhe = lazy(() => import('@/paginas/Detalhe').then((m) => ({ default: m.Detalhe })))
+const Anomalias = lazy(() => import('@/paginas/Anomalias').then((m) => ({ default: m.Anomalias })))
 const Perguntar = lazy(() => import('@/paginas/Perguntar').then((m) => ({ default: m.Perguntar })))
 
 const sobDemanda = (pagina: ReactNode) => <Suspense fallback={<Carregando />}>{pagina}</Suspense>
@@ -42,6 +43,7 @@ const rotas = [
       { path: ':simulacao/mapa', element: sobDemanda(<Mapa />) },
       { path: ':simulacao/rack/:alvo', element: sobDemanda(<Detalhe tipo="rack" />) },
       { path: ':simulacao/crac/:alvo', element: sobDemanda(<Detalhe tipo="crac" />) },
+      { path: ':simulacao/anomalias', element: sobDemanda(<Anomalias />) },
       { path: ':simulacao/perguntar', element: sobDemanda(<Perguntar />) },
     ],
   },

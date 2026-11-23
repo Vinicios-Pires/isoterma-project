@@ -15,6 +15,9 @@ export type RackForaDaFaixa = Esquemas['RackForaDaFaixa']
 export type Serie = Esquemas['Serie']
 export type PontoSerie = Esquemas['PontoSerie']
 export type Incidente = Esquemas['Incidente']
+export type Anomalias = Esquemas['Anomalias']
+export type Alerta = Esquemas['Alerta']
+export type Placar = Esquemas['Placar']
 
 export type TipoMapa = MapaTermico['tipo']
 export type Altura = NonNullable<MapaTermico['altura']>

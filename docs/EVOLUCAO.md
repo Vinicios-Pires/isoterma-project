@@ -142,9 +142,13 @@ viram. A validação achou quatro defeitos, todos corrigidos antes do teste, e o
 documentado (deriva muito longa entortando a reta da saída). Detalhes em
 [ANOMALIAS.md](ANOMALIAS.md) e [DETECCAO.md](DETECCAO.md).
 
+**Anomalias na API e na web (22/11/2026):** rota `/anomalias` com cache por simulação (a
+`demo` é calculada ao subir o servidor) e a página de anomalias: placar contra o gabarito, linha
+do tempo comparando incidentes e alertas, a evidência de cada alerta e o hall no momento dele.
+Os alertas também aparecem sombreados nas séries de rack e CRAC.
+
 ### Decisões em aberto
 
-- Anomalias na API e na web (página com os alertas e o placar)
 - Deploy da demo pública (Cloud Run + Cloudflare Pages)
 
 O projeto original da aula está preservado em [`legacy/`](../legacy/) como referência do

@@ -94,10 +94,76 @@ def test_gabarito(cliente: TestClient) -> None:
     assert {"tipo", "alvo", "inicio", "fim", "descricao"} <= set(incidentes[0])
 
 
+def test_anomalias_com_a_avaliacao(cliente: TestClient) -> None:
+    anomalias = cliente.get("/api/hall/anomalias").json()
+    incidentes = {i["incidente_id"]: i for i in cliente.get("/api/hall/gabarito").json()}
+
+    alertas = anomalias["alertas"]
+    assert len(alertas) == 8
+    assert [a["alerta_id"] for a in alertas] == list(range(1, 9))
+    assert alertas == sorted(alertas, key=lambda a: a["inicio"])
+    for alerta in alertas:
+        # Cada alerta acertou exatamente o incidente do mesmo tipo e alvo.
+        assert len(alerta["incidentes"]) == 1
+        incidente = incidentes[alerta["incidentes"][0]]
+        assert (incidente["tipo"], incidente["alvo"]) == (alerta["tipo"], alerta["alvo"])
+        assert alerta["equipamento"] == alerta["alvo"].split("/")[0]
+    avaliacao = anomalias["avaliacao"]
+    assert avaliacao["total"]["recall"] == 1.0
+    assert avaliacao["total"]["alertas"] == avaliacao["total"]["corretos"] == 8
+    assert avaliacao["perdidos"] == []
+    assert anomalias["alcance_retorno_m"] > 0
+
+
+def test_anomalias_ficam_em_cache(cliente: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    primeira = cliente.get("/api/hall/anomalias").json()
+    monkeypatch.setattr(
+        "isoterma.api.app.detectar", lambda *_: pytest.fail("rodou os detectores de novo")
+    )
+
+    assert cliente.get("/api/hall/anomalias").json() == primeira
+
+
+def test_anomalias_sem_gabarito(dados: Path, tmp_path: Path) -> None:
+    import shutil
+
+    shutil.copytree(dados / "hall", tmp_path / "real")
+    (tmp_path / "real" / "incidentes.parquet").unlink()
+    aplicacao = criar_app(ConfigApi(tmp_path))
+    with TestClient(aplicacao) as c:
+        anomalias = c.get("/api/real/anomalias").json()
+    aplicacao.state.catalogo.fechar()
+
+    assert anomalias["avaliacao"] is None
+    assert len(anomalias["alertas"]) == 8
+    assert all(a["incidentes"] is None for a in anomalias["alertas"])
+
+
+def test_anomalias_preparadas_ao_subir(dados: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    import threading
+
+    pronto = threading.Event()
+    original = criar_app.__globals__["_calcular_anomalias"]
+
+    def calcular(*args):
+        try:
+            return original(*args)
+        finally:
+            pronto.set()
+
+    monkeypatch.setattr("isoterma.api.app._calcular_anomalias", calcular)
+    aplicacao = criar_app(ConfigApi(dados, preparar_anomalias=("hall", "nao-existe")))
+
+    assert pronto.wait(120)
+    assert "hall" in aplicacao.state.catalogo._anomalias
+    aplicacao.state.catalogo.fechar()
+
+
 @pytest.mark.parametrize(
     ("rota", "parametros", "codigo"),
     [
         ("/api/nada/resumo", {}, 404),
+        ("/api/nada/anomalias", {}, 404),
         ("/api/outra-coisa/resumo", {}, 404),
         ("/api/..%2F..%2Fetc/resumo", {}, 404),
         ("/api/hall/mapa", {"instante": "2030-01-01T00:00"}, 400),

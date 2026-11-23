@@ -393,6 +393,7 @@ uv run isoterma servir --porta 9000 --origem https://meu-front.dev
 | `--teto-diario` | teto de gasto estimado da IA por dia, em dólares | 1,0 |
 | `--origem` | origem liberada no CORS; repita para várias | o Vite local (`http://localhost:5173`) |
 | `--atras-de-proxy` | identifica o IP do cliente pelo `X-Forwarded-For` | não |
+| `--preparar` | simulação cujas anomalias são calculadas ao subir, em segundo plano, para a página de anomalias não esperar; repita para várias | `demo` |
 
 Para parar o servidor, use Ctrl+C.
 

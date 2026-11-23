@@ -26,6 +26,7 @@ o mesmo domínio do front).
 | Mapa térmico | `/:simulacao/mapa` | a planta do hall com as isotermas, o controle de tempo e o detalhe do rack; clicar num CRAC abre as séries dele |
 | Rack | `/:simulacao/rack/:id` | ficha do rack e séries de temperatura (entrada nas 3 alturas e saída) e de potência |
 | CRAC | `/:simulacao/crac/:id` | setpoint, os racks da zona e as séries de insuflamento e retorno |
+| Anomalias | `/:simulacao/anomalias` | os alertas dos detectores e o placar contra o gabarito: linha do tempo comparada, lista filtrável e o hall no momento de cada alerta |
 | Perguntar | `/:simulacao/perguntar` | o chat com a IA, com cada consulta mostrada ao vivo |
 
 A raiz (`/`) abre a simulação `demo`, se existir, ou a primeira da lista.
@@ -69,6 +70,23 @@ mapa anterior continua na tela, sem piscar.
 - **Cores das séries:** a paleta categórica validada para daltonismo e contraste nos dois
   temas, sempre na mesma ordem (entrada base, meio, topo, saída). Como duas cores ficam abaixo
   de 3:1 no tema claro, toda série tem legenda e todo gráfico tem **"Ver como tabela"**.
+
+## Anomalias
+
+- **Placar no topo:** incidentes detectados, alertas corretos, alertas falsos e o atraso
+  mediano, contra o gabarito desta simulação. Sem gabarito, a página mostra só a contagem de
+  alertas, de eventos físicos e de defeitos de sensor.
+- **Linha do tempo comparada:** em cada tipo, o incidente do gabarito em cima e o alerta
+  embaixo. Alerta falso aparece vazado, com contorno vermelho; incidente perdido, tracejado.
+- **Lista de alertas** com filtro por tipo e por situação (confirmados ou falsos). O alerta
+  escolhido fica na URL (`?alerta=12`) e mostra a evidência, o incidente que ele acertou e o
+  hall naquele momento, com o equipamento em destaque.
+- **"Série de ..."** abre o rack ou CRAC numa janela em volta do alerta, com os alertas
+  sombreados no gráfico (o interruptor "Alertas" do detalhe). Foi assim que o alerta falso do
+  teste ficou fácil de entender: a saída do D-14 segue o pico de carga do dia, e a reta torta
+  leu isso como deriva.
+- **A primeira visita a uma simulação** roda os detectores na API (alguns segundos), e a página
+  diz isso enquanto espera.
 
 ## Perguntar
 
@@ -143,9 +161,12 @@ O CI roda lint, testes e build do front num job próprio.
   limite, o contorno dos racks fora da faixa, seleção e dica) e as páginas com uma API falsa
   (indicadores, tabela, links para o mapa, erros da API e simulação inexistente).
 
+- **Anomalias:** o placar, a evidência e o incidente do alerta aberto, os links para a série
+  e o mapa, o filtro de falsos, a simulação sem gabarito (que nem pede o gabarito) e o erro
+  da API.
 - **Detalhe e Perguntar:** o pedido da série com a janela da URL, a ficha, a visão em tabela, o
   streaming simulado (consultas, Markdown, custo e lista recolhida), o erro no meio do fluxo, o
   limite de uso e a IA desligada.
 
-Mapa, Detalhe e Perguntar são carregados só quando abertos (D3, Recharts e o Markdown ficam
+Mapa, Detalhe, Anomalias e Perguntar são carregados só quando abertos (D3, Recharts e o Markdown ficam
 fora do pacote inicial).

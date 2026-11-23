@@ -21,6 +21,8 @@ export interface FaixaDestaque {
   inicio: string
   fim: string
   rotulo: string
+  /** Padrão: cinza, como os incidentes do gabarito. */
+  cor?: string
 }
 
 function Dica({
@@ -191,10 +193,15 @@ export function GraficoSerie({
                 key={`${f.inicio}-${f.rotulo}`}
                 x1={new Date(f.inicio).getTime()}
                 x2={new Date(f.fim).getTime()}
-                fill="var(--muted-foreground)"
-                fillOpacity={0.12}
+                fill={f.cor ?? 'var(--muted-foreground)'}
+                fillOpacity={f.cor ? 0.16 : 0.12}
                 ifOverflow="hidden"
-                label={{ value: f.rotulo, position: 'insideTopLeft', fill: 'var(--muted-foreground)', fontSize: 11 }}
+                label={{
+                  value: f.rotulo,
+                  position: f.cor ? 'insideBottomLeft' : 'insideTopLeft',
+                  fill: 'var(--muted-foreground)',
+                  fontSize: 11,
+                }}
               />
             ))}
             {referencias.map((r) => (
