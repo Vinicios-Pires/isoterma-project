@@ -27,6 +27,7 @@ export function PlantaTermica({
   planta: Planta
   racks: ValorRack[]
   tipo: TipoMapa
+  /** Rack ou CRAC em destaque. */
   selecionado?: string | null
   aoSelecionar?: (rackId: string) => void
   aoSelecionarCrac?: (cracId: string) => void
@@ -116,8 +117,8 @@ export function PlantaTermica({
                 width={g.texto * 4.2}
                 height={g.texto * 1.7}
                 rx={0.1}
-                className="fill-card stroke-planta-linha"
-                strokeWidth={1}
+                className={id === selecionado ? 'fill-card stroke-foreground' : 'fill-card stroke-planta-linha'}
+                strokeWidth={id === selecionado ? 3 : 1}
                 vectorEffect="non-scaling-stroke"
               />
               <text

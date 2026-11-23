@@ -3,6 +3,7 @@ import { lerEventos } from '@/lib/sse'
 
 import type {
   Altura,
+  Anomalias,
   EventoPergunta,
   Incidente,
   MapaTermico,
@@ -100,4 +101,5 @@ export const api = {
   serie: (nome: string, alvo: string, janela: Janela = {}, pontos = 500) =>
     buscar<Serie>(`${sim(nome)}/serie`, { alvo, pontos, ...janela }),
   gabarito: (nome: string) => buscar<Incidente[]>(`${sim(nome)}/gabarito`),
+  anomalias: (nome: string) => buscar<Anomalias>(`${sim(nome)}/anomalias`),
 }

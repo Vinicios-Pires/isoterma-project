@@ -2,12 +2,12 @@ import { ArrowLeft, Map as IconeMapa, ZoomOut } from 'lucide-react'
 import { useMemo } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router'
 
-import { useGabarito, usePlanta, useSerie } from '@/api/consultas'
-import type { Incidente, Planta, Simulacao } from '@/api/tipos'
+import { useAnomalias, useGabarito, usePlanta, useSerie } from '@/api/consultas'
+import type { Alerta, Incidente, Planta, Simulacao } from '@/api/tipos'
 import { Carregando, Conteudo, Falha } from '@/componentes/Estado'
 import { GraficoSerie, type FaixaDestaque } from '@/componentes/GraficoSerie'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { useSimulacao } from '@/hooks/useSimulacao'
@@ -42,6 +42,18 @@ function incidentesDe(incidentes: Incidente[], alvo: string, zona: string | null
   return incidentes
     .filter((i) => i.alvo === alvo || i.alvo.startsWith(`${alvo}/`) || (zona !== null && i.alvo === zona))
     .map((i) => ({ inicio: i.inicio, fim: i.fim, rotulo: CATEGORIAS[i.tipo]?.nome ?? i.tipo }))
+}
+
+/** Alertas dos detectores no próprio equipamento ou num sensor dele. */
+function alertasDe(alertas: Alerta[], alvo: string): FaixaDestaque[] {
+  return alertas
+    .filter((a) => a.equipamento === alvo)
+    .map((a) => ({
+      inicio: a.inicio,
+      fim: a.fim,
+      rotulo: `alerta: ${CATEGORIAS[a.tipo]?.nome ?? a.tipo}`,
+      cor: 'var(--chart-2)',
+    }))
 }
 
 function Ficha({ tipo, alvo, planta, simulacao }: { tipo: TipoEquipamento; alvo: string; planta: Planta; simulacao: string }) {
@@ -107,15 +119,20 @@ function DetalheDaSimulacao({ simulacao, tipo }: { simulacao: Simulacao; tipo: T
   const inicio = parametros.get('inicio')
   const fim = parametros.get('fim')
   const mostrarGabarito = parametros.get('gabarito') === '1'
+  const mostrarAlertas = parametros.get('alertas') === '1'
   const janela = useMemo(() => ({ inicio, fim }), [inicio, fim])
 
   const planta = usePlanta(simulacao.nome)
   const serie = useSerie(simulacao.nome, alvo, janela)
   const gabarito = useGabarito(simulacao.nome)
+  const anomalias = useAnomalias(simulacao.nome, mostrarAlertas)
   const fuso = simulacao.fuso
 
   const zona = tipo === 'rack' ? (planta.data?.racks.find((r) => r.rack_id === alvo)?.zona_crac ?? null) : null
-  const faixas = mostrarGabarito && gabarito.data ? incidentesDe(gabarito.data, alvo, zona) : []
+  const faixas = [
+    ...(mostrarGabarito && gabarito.data ? incidentesDe(gabarito.data, alvo, zona) : []),
+    ...(mostrarAlertas && anomalias.data ? alertasDe(anomalias.data.alertas, alvo) : []),
+  ]
 
   const alterar = (mudancas: Record<string, string | null>) =>
     setParametros(
@@ -174,19 +191,26 @@ function DetalheDaSimulacao({ simulacao, tipo }: { simulacao: Simulacao; tipo: T
             />
             Incidentes da simulação
           </label>
+          <label className="flex items-center gap-2 text-sm">
+            <Switch
+              checked={mostrarAlertas}
+              onCheckedChange={(ligado: boolean) => alterar({ alertas: ligado ? '1' : null })}
+              aria-label="Mostrar alertas dos detectores"
+            />
+            Alertas {mostrarAlertas && anomalias.isPending && <span className="text-xs text-muted-foreground">(calculando…)</span>}
+          </label>
           <Button variant="outline" size="sm" onClick={afastar} disabled={!inicio && !fim}>
             <ZoomOut className="size-4" /> Afastar
           </Button>
           <Button variant="outline" size="sm" onClick={() => alterar({ inicio: null, fim: null })} disabled={!inicio && !fim}>
             Período inteiro
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            render={<Link to={`/${simulacao.nome}/mapa?t=${encodeURIComponent(instanteNoMapa)}${tipo === 'rack' ? `&rack=${alvo}` : ''}`} />}
+          <Link
+            to={`/${simulacao.nome}/mapa?t=${encodeURIComponent(instanteNoMapa)}${tipo === 'rack' ? `&rack=${alvo}` : ''}`}
+            className={buttonVariants({ variant: 'outline', size: 'sm' })}
           >
             <IconeMapa className="size-4" /> No mapa
-          </Button>
+          </Link>
         </div>
       </div>
 

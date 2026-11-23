@@ -26,6 +26,7 @@ dados (por exemplo, `demo`).
 | GET | `/{simulacao}/fora-da-faixa?inicio&fim` | racks que saíram de 18–27 °C |
 | GET | `/{simulacao}/serie?alvo&inicio&fim&pontos` | série de um sensor, rack ou CRAC |
 | GET | `/{simulacao}/gabarito` | os incidentes injetados (só existe porque os dados são simulados) |
+| GET | `/{simulacao}/anomalias` | os alertas dos detectores, com a evidência de cada um e a avaliação contra o gabarito |
 | POST | `/{simulacao}/perguntar` | a IA, em streaming (SSE) |
 
 - **Datas** vão em ISO 8601. Sem fuso (`2026-11-07T04:15`), valem no horário local do hall; com
@@ -34,6 +35,21 @@ dados (por exemplo, `demo`).
   `400` para erros de domínio (janela fora da simulação, alvo que não existe), `422` para
   parâmetros inválidos, `429` para limite de uso da IA e `503` para IA desligada ou mal
   configurada.
+
+## Anomalias
+
+A rota `/anomalias` roda os [detectores](ANOMALIAS.md) sobre a simulação inteira. Como isso leva
+de 5 a 25 s, o resultado fica em memória: só o primeiro pedido de cada simulação espera, e
+pedidos simultâneos aguardam o mesmo cálculo. O `servir` já calcula a `demo` ao subir (opção
+`--preparar`), para a primeira visita à página não esperar.
+
+- **Cada alerta** traz tipo, alvo (`B-05/entrada-topo`), o equipamento (`B-05`), o período, a
+  frase com o que foi visto e o valor que mais se afastou do normal.
+- **Os detectores não leem o gabarito.** A comparação é feita depois, à parte: cada alerta traz
+  os `incidentes` do gabarito que acertou (vazio é alerta falso), e `avaliacao` traz o placar
+  total e por tipo, os incidentes perdidos e os que não afetaram nenhuma leitura.
+- **Numa simulação sem gabarito** (sem o `incidentes.parquet`), `avaliacao` e `incidentes` vêm
+  nulos e os alertas continuam lá: é o caso de um data center real.
 
 ## `perguntar` em streaming
 

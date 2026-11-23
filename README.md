@@ -48,7 +48,7 @@ Pergunta em PT-BR → LLM gera SQL → DuckDB sobre Parquet → resultado + anom
   - [x] [API](docs/API.md) (FastAPI): o motor e a IA por HTTP, com streaming das consultas do agente
   - [x] [Web](docs/WEB.md) (React + Vite + TypeScript): Painel e Mapa térmico com isotermas e controle de tempo
   - [x] Web: séries de rack e CRAC (zoom por arraste, gabarito sobreposto) e o chat com a IA em streaming
-  - [ ] Anomalias na API e na web
+  - [x] [Anomalias na web](docs/WEB.md#anomalias): alertas comparados ao gabarito, a evidência de cada um e o hall no momento do alerta
   - [ ] Demo pública: Cloudflare Pages + Cloud Run
 - **Fase 3: mundo real**
   - [ ] Clima externo real (Open-Meteo/INMET) como entrada do simulador

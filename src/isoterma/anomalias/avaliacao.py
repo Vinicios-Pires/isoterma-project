@@ -101,6 +101,15 @@ def _encostam(a_inicio: datetime, a_fim: datetime, b_inicio: datetime, b_fim: da
     return a_inicio < b_fim + FOLGA and b_inicio < a_fim + FOLGA
 
 
+def corresponde(deteccao: Deteccao, incidente: Incidente) -> bool:
+    """Se a detecção acertou o incidente: mesmo tipo, mesmo alvo e períodos que se encostam."""
+    return (
+        deteccao.tipo == incidente.tipo
+        and deteccao.alvo == incidente.alvo
+        and _encostam(deteccao.inicio, deteccao.fim, incidente.inicio, incidente.fim)
+    )
+
+
 def _mesmo_lugar(deteccao: Deteccao, incidente: Incidente) -> bool:
     """Mesmo equipamento: o rack ou CRAC, ou um sensor dele (para achar confusões)."""
     return deteccao.alvo.split("/")[0] == incidente.alvo.split("/")[0]
@@ -221,13 +230,7 @@ def avaliar(simulacao: str, resultado: Resultado, gabarito: list[Incidente]) -> 
             detectados.add(indice)  # fora do recall e da lista de perdidos
             continue
         placar.incidentes += 1
-        acertos = [
-            d
-            for d in deteccoes
-            if d.tipo == inc.tipo
-            and d.alvo == inc.alvo
-            and _encostam(d.inicio, d.fim, inc.inicio, inc.fim)
-        ]
+        acertos = [d for d in deteccoes if corresponde(d, inc)]
         if acertos:
             detectados.add(indice)
             placar.detectados += 1
@@ -239,11 +242,7 @@ def avaliar(simulacao: str, resultado: Resultado, gabarito: list[Incidente]) -> 
     for d in deteccoes:
         placar = por_tipo.setdefault(d.tipo, PlacarTipo())
         placar.deteccoes += 1
-        certo = any(
-            d.tipo == i.tipo and d.alvo == i.alvo and _encostam(d.inicio, d.fim, i.inicio, i.fim)
-            for i in gabarito
-        )
-        if certo:
+        if any(corresponde(d, i) for i in gabarito):
             placar.corretas += 1
             continue
         falsos.append(d)

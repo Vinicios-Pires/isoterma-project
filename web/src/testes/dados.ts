@@ -1,5 +1,5 @@
 // Dados de exemplo para os testes: um hall de 2 fileiras com 3 racks e 2 CRACs.
-import type { Incidente, MapaTermico, Planta, RackForaDaFaixa, Resumo, Simulacao, ValorRack } from '@/api/tipos'
+import type { Anomalias, Incidente, MapaTermico, Planta, RackForaDaFaixa, Resumo, Simulacao, ValorRack } from '@/api/tipos'
 
 export const SIMULACAO: Simulacao = {
   nome: 'demo',
@@ -101,6 +101,59 @@ export const GABARITO: Incidente[] = [
   },
 ]
 
+const PLACAR_VAZIO = {
+  incidentes: 0,
+  invisiveis: 0,
+  detectados: 0,
+  alertas: 0,
+  corretos: 0,
+  precisao: null,
+  recall: null,
+  f1: null,
+  atraso_mediano_min: null,
+}
+
+/** Um alerta que acertou a falha do CRAC-01 e um falso na saída do B-02. */
+export const ANOMALIAS: Anomalias = {
+  alertas: [
+    {
+      alerta_id: 1,
+      tipo: 'falha_crac',
+      alvo: 'CRAC-01',
+      equipamento: 'CRAC-01',
+      inicio: '2026-11-01T02:04:00Z',
+      fim: '2026-11-01T04:10:00Z',
+      evidencia: 'Insuflamento até 9,5 °C acima do normal, com a entrada dos racks da zona subindo junto.',
+      medida: 9.5,
+      incidentes: [1],
+    },
+    {
+      alerta_id: 2,
+      tipo: 'sensor_deriva',
+      alvo: 'B-02/saida',
+      equipamento: 'B-02',
+      inicio: '2026-11-01T10:00:00Z',
+      fim: '2026-11-01T12:30:00Z',
+      evidencia: 'A saída discorda 1,4 °C do esperado pela entrada e pela carga.',
+      medida: 1.4,
+      incidentes: [],
+    },
+  ],
+  fonte: 'leituras brutas',
+  segundos: 2.31,
+  alcance_retorno_m: 1.5,
+  avaliacao: {
+    total: { ...PLACAR_VAZIO, incidentes: 1, detectados: 1, alertas: 2, corretos: 1, precisao: 0.5, recall: 1, f1: 0.667, atraso_mediano_min: 4 },
+    por_tipo: {
+      falha_crac: { ...PLACAR_VAZIO, incidentes: 1, detectados: 1, alertas: 1, corretos: 1, precisao: 1, recall: 1, f1: 1, atraso_mediano_min: 4 },
+      sensor_deriva: { ...PLACAR_VAZIO, alertas: 1, precisao: 0 },
+      sensor_picos: PLACAR_VAZIO,
+    },
+    perdidos: [],
+    invisiveis: [],
+  },
+}
+
 /** Um fetch falso que responde cada rota da API com os dados acima. */
 export function apiFalsa(respostas: Record<string, unknown> = {}, falhar: string[] = []) {
   const tabela: Record<string, unknown> = {
@@ -110,6 +163,7 @@ export function apiFalsa(respostas: Record<string, unknown> = {}, falhar: string
     '/api/demo/mapa': MAPA,
     '/api/demo/fora-da-faixa': FORA,
     '/api/demo/gabarito': GABARITO,
+    '/api/demo/anomalias': ANOMALIAS,
     ...respostas,
   }
   return async (entrada: RequestInfo | URL) => {

@@ -656,6 +656,13 @@ def servir(
     atras_de_proxy: Annotated[
         bool, typer.Option(help="Confia no X-Forwarded-For para identificar o IP do cliente.")
     ] = False,
+    preparar: Annotated[
+        list[str] | None,
+        typer.Option(
+            help="Simulação cujas anomalias são calculadas ao subir, para a página não esperar "
+            "(repita a opção). Padrão: demo."
+        ),
+    ] = None,
 ) -> None:
     """Sobe a API HTTP (documentação interativa em /docs)."""
     import os
@@ -675,6 +682,7 @@ def servir(
         perguntas_por_hora=perguntas_por_hora,
         teto_diario_usd=teto_diario,
         confiar_proxy=atras_de_proxy,
+        preparar_anomalias=tuple(preparar) if preparar else ("demo",),
         **({"origens_cors": tuple(origem)} if origem else {}),
     )
     aplicacao = criar_app(config)

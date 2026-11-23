@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 
 import { useForaDaFaixa, useGabarito, useResumo } from '@/api/consultas'
 import type { Incidente, Simulacao } from '@/api/tipos'
@@ -151,7 +151,11 @@ function Conteudos({ simulacao }: { simulacao: Simulacao }) {
           </CardTitle>
           <CardDescription>
             O que o simulador injetou de propósito. Num data center real isso não existiria: serve para comparar o
-            que aconteceu com o que o Isoterma mostra. Clique num incidente para vê-lo no mapa.
+            que aconteceu com o que o Isoterma mostra. Clique num incidente para vê-lo no mapa, ou{' '}
+            <Link to={`/${simulacao.nome}/anomalias`} className="text-primary hover:underline">
+              compare com o que os detectores encontraram
+            </Link>
+            .
           </CardDescription>
         </CardHeader>
         <CardContent>

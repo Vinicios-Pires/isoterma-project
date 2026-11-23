@@ -41,8 +41,23 @@ export function useForaDaFaixa(nome: string, janela: Janela = {}) {
   })
 }
 
-export function useGabarito(nome: string) {
-  return useQuery({ queryKey: ['gabarito', nome], queryFn: () => api.gabarito(nome), staleTime: PARA_SEMPRE })
+export function useGabarito(nome: string, ativo = true) {
+  return useQuery({
+    queryKey: ['gabarito', nome],
+    queryFn: () => api.gabarito(nome),
+    staleTime: PARA_SEMPRE,
+    enabled: ativo,
+  })
+}
+
+/** Os alertas dos detectores. Na primeira visita a uma simulação, a API leva alguns segundos. */
+export function useAnomalias(nome: string, ativo = true) {
+  return useQuery({
+    queryKey: ['anomalias', nome],
+    queryFn: () => api.anomalias(nome),
+    staleTime: PARA_SEMPRE,
+    enabled: ativo,
+  })
 }
 
 export function useSaude() {
